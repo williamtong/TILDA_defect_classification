@@ -120,34 +120,37 @@ def compile_image_model(filter_dim, dropout, conv_factor =1, patience = 20, lr =
     call_back = EarlyStopping(patience = patience, restore_best_weights = True)
     image_learner = Sequential()
     
-    image_learner.add(Conv2D(filters = 16 * conv_factor, kernel_size = (filter_dim, filter_dim), 
+    image_learner.add(Conv2D(filters = 4 * conv_factor, kernel_size = (filter_dim, filter_dim), 
                              padding="same",strides = (1, 1), activation = "relu"))
-    image_learner.add(Dropout(dropout))
     image_learner.add(BatchNormalization(axis = 3, name = 'bn0'))
-    # image_learner.add(MaxPool2D())
+    image_learner.add(Dropout(dropout))
+    image_learner.add(MaxPool2D())
     
-    image_learner.add(Conv2D(filters = 32 * conv_factor, kernel_size = (filter_dim, filter_dim), 
+    image_learner.add(Conv2D(filters = 8 * conv_factor, kernel_size = (filter_dim, filter_dim), 
                              padding="same",strides = (1, 1), activation = "relu"))
+    image_learner.add(BatchNormalization(axis = 3, name = 'bn1'))
     image_learner.add(Dropout(dropout))
     image_learner.add(MaxPool2D())
     
-    image_learner.add(Conv2D(filters = 64 * conv_factor, kernel_size = (filter_dim, filter_dim), 
+    image_learner.add(Conv2D(filters = 16 * conv_factor, kernel_size = (filter_dim, filter_dim), 
                              padding="same", strides = (1, 1), activation = "relu"))
+    image_learner.add(BatchNormalization(axis = 3, name = 'bn2'))
     image_learner.add(Dropout(dropout))
     image_learner.add(MaxPool2D())
     
-    # image_learner.add(Conv2D(filters = 128 * conv_factor, kernel_size = (filter_dim, filter_dim),
-    #                          padding="same", strides = (1, 1), activation = "relu"))
-    # image_learner.add(Dropout(dropout))
-    # image_learner.add(MaxPool2D())
+    image_learner.add(Conv2D(filters = 32 * conv_factor, kernel_size = (filter_dim, filter_dim),
+                             padding="same", strides = (1, 1), activation = "relu"))
+    image_learner.add(BatchNormalization(axis = 3, name = 'bn3'))
+    image_learner.add(Dropout(dropout))
+    image_learner.add(MaxPool2D())
     
     image_learner.add(Flatten())
-    image_learner.add(Dense(units = 8, activation = "relu"))
+    image_learner.add(Dense(units = 32 * conv_factor, activation = "relu"))
     image_learner.add(Dense(units = num_classes, activation = "softmax"))
     
     image_learner.compile(loss = "sparse_categorical_crossentropy", metrics = ["accuracy"], 
                           optimizer = tf.keras.optimizers.Adam(learning_rate= lr))
-    print(image_learner.summary)
+    print(image_learner.layers)
     return image_learner
 
 class CNN_model: 
@@ -184,6 +187,7 @@ class CNN_model:
         model: trained model
         '''
         self.label_dict = label_dict
+        print(self.image_learner.summary())
         self.history = self.image_learner.fit(train_set, 
                                               validation_data = [eval_set], 
                                               callbacks = [self.call_back], 
