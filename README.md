@@ -79,7 +79,7 @@ The images are 64x64 pixels. We employ a segmented approach. First we use a 2-cl
 
 The final output block is quite generic. The size of the fully connected layer is ¼ of the number of conv. filters in the last conv. block. The softmax layer becomes a signmoid layer when the number of classes = 2.
 
-[./TILDA-defect-classific/images/introduction/CNN_diagram.png](./TILDA-defect-classific/images/introduction/CNN_diagram.png)
+![./TILDA-defect-classific/images/model_results/CNN_diagram.png](./TILDA-defect-classific/images/model_results/CNN_diagram.png)
 
 ISSUES AND HOW THEY WERE ADDRESSED
 
