@@ -10,23 +10,20 @@ Tilda (<https://www.tildafabricusa.com)>) is a fabric brand founded by Norwegian
 The Tilda image dataset for defect detection/classification in fabric presents an image classification on an industrial context (<https://www.kaggle.com/datasets/angelolmg/tilda-400-64x64-patches>). It is based on the public dataset by the Deutsche Forschungsgemeinschaft's Texture analysis group from the University of Freiburg (<https://lmb.informatik.uni-freiburg.de/resources/datasets/tilda.en.html>) The original images were resized from 768x512 to 512x512, and then broken into 64x64 patches.
 
 GOALS
-
 1. Build a model that will detect defects images that contain defects. (2-class)
 2. Build a model that will identify the defects in each image. (4-class)
 
 KEY RESULTS
-
 1. For the 2-class defect detection model, we achieved precision of 0.95 and 0.94, and recall if 0.997 and 0.49 for the good and defect class. The Area Under of th Curve (AUC) for the ROC is 0.90.
 2. For the 4-class defect identification, we achieve an overall accuracy of 0.64, with the accuracies of 0.44, 0.60, 0.83, 0.79 for the defect classes of hole, objects, oil spot, thread error.
 
 OVERVIEW OF DATA
-
 1. The data is massively imbalanced, with 90.5% if the images being in the “good” class.
 
-![image info](TILDA-defect-classific/images/intro/pop_dist_all_samples.png)
-![Distribution of all 5 classes](./TILDA-defect-classific/images/intro/pop_dist_all_samples.png)
+![image info](./TILDA-defect-classific/images/intro/pop_dist_all_samples.png)
+![Distribution of all 5 classes](./TILDA-defect-classific/images/introduction/pop_dist_all_samples.png)
 
-![Distribution of 4 defect classes](./TILDA-defect-classific/images/intro/pop_dist_defects.png)
+![Distribution of 4 defect classes](./TILDA-defect-classific/images/introduction/pop_dist_defects.png)
 
 Below are the actual number of images for each class
 
@@ -102,7 +99,7 @@ I trained four model with the following parameters. They will be referred to as 
 | **8 filters + 16 filters + 32 filters (8,16,32)** | A-1 | B-1 |
 | **16 filters + 32 filters + 64 filters (16,32,64)** | A-2 | B-2 |
 
-**RESULTS**
+**_RESULTS_**
 
 **Defect DETECTION**
 
@@ -192,3 +189,51 @@ There one direction to take in future work is to use a hybrid feature size appro
 1. There is strong evidence from the (4-class) defect identification model results that different filter sizes can target different defect types. The new model should have 2 or more filter sizes instead of one.
 
 2. The dearth of defect class samples is clearly a direct cause of inferior results (e.g. holes). One way to just artificially increase the weights of these samples so the model will pay more attention to them. However, this will be done at the expense of accuracy for the other classes. Another possible avenue to explore is to train a Generative Adversarial Network (GAN) to generate more defect samples. However, this work will require probably a lot more effort than building these two models so far, so the business case must justify it to proceed.
+
+
+
+
+
+
+**_SHAPLEY value analysis_**
+
+[_Shapley Values_](https://www.investopedia.com/terms/s/shapley-value.asp#:~:text=Essentially%2C%20the%20Shapley%20value%20is,or%20less%20than%20the%20others.)  are derives from the _marginal contribution_ of each feature to a prediction, after applying all other features. In game theory, Shapley values help determine how much each player in a collaborative game has contributed to the total payout. For a machine learning model, each feature is considered a "player". The Shapley value for a feature represents the average magnitude of that feature's contribution across all possible combinations of features. Specifically, Shapley values are calculated by comparing a model's predictions with and without a particular feature present. This is done iteratively for each feature and each sample in the dataset. By assigning each feature an importance value for every prediction, SHAP values provide a local, consistent explanation of how the model behaves. They reveal which features have the most impact on a specific prediction, whether positively or negatively. This is valuable for understanding the reasoning behind complex machine learning models such as [_deep neural networks_](https://www.kdnuggets.com/2023/08/shap-values-model-interpretability-machine-learning.html)
+
+In a CNN model, the basic feature is the pixel. We employ the [shap](https://shap.readthedocs.io/en/latest/example_notebooks/overviews/An%20introduction%20to%20explainable%20AI%20with%20Shapley%20values.html) library [DeepExplainer](https://shap.readthedocs.io/en/latest/example_notebooks/image_examples/image_classification/Front%20Page%20DeepExplainer%20MNIST%20Example.html) function to visualize each pixel contribution to the prediction. Because the shap library is a little out of date, I had to write my own code display the results.
+
+DEFECT DETECTION (2-CLASS)
+
+**True positive (Actual = “defect”, Predicted = “defect”)**
+
+The image below shows the negative (blue) and positive (red) shapley values for each pixel of the image. The image was correctly classified by the model as “defect” (87.4% probability). One can see a big contributor is the trench-like vertical feature, which has a concentration of red dots.
+
+![images/shap_plots/2-class/true_positive_1.png](./TILDA-defect-classific/images/shap_plots/2-class/true_positive_1.png)
+
+Another defect example is following, where there is a concentration of red pixels within and near the edges of the white diagonal streak. It may be that the edges are indicators of a defect. There are blue pixels near the feature edge as well, but not as numerous as red pixels.
+
+![images/shap_plots/2-class/true_positive_2.png](./TILDA-defect-classific/images/shap_plots/2-class/true_positive_2.png)
+
+**True negative (Actual = “good”, predicted = “good”)**
+
+For the correctly predicted "good" images, in general the red pixels tend to be less clustered, with less intensity, even when they are more numerous than the negative (blue) pixels.
+
+![images/shap_plots/2-class/true_negative_1.png](./TILDA-defect-classific/images/shap_plots/2-class/true_negative_1.png)
+![images/shap_plots/2-class/true_negative_2.png](./TILDA-defect-classific/images/shap_plots/2-class/true_negative_2.png)
+
+**False positives (Actual = “Good”, Predicted = “Defect”)**
+
+These tend to images that have small dots which are not considered defects. They typically are just “blemishes” that got misrecognized by the model as a defect.
+
+![images/shap_plots/2-class/false_positve_1.png](./TILDA-defect-classific/images/shap_plots/2-class/false_positve_1.png)
+![images/shap_plots/2-class/false_postive_2.png](./TILDA-defect-classific/images/shap_plots/2-class/false_positive_2.png)
+
+**False negative (Actual = “defect”, Predicted = “good”)**
+
+These are the most important defects that needs to be greatly minimized if not eliminated. In most cases, the defects are just not very well formed.
+
+![images/shap_plots/2-class/false_negative_1.png](./TILDA-defect-classific/images/shap_plots/2-class/false_negative_1.png)
+
+![images/shap_plots/2-class/false_negative_2.png](./TILDA-defect-classific/images/shap_plots/2-class/false_negative_2.png)
+
+
+git ad
