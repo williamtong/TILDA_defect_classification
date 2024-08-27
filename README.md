@@ -224,8 +224,8 @@ For the correctly predicted "good" images, in general the red pixels tend to be 
 
 These tend to images that have small dots which are not considered defects. They typically are just “blemishes” that got misrecognized by the model as a defect.
 
-![images/shap_plots/2-class/false_positve_1.png](./TILDA-defect-classific/images/shap_plots/2-class/false_positve_1.png)
-![images/shap_plots/2-class/false_postive_2.png](./TILDA-defect-classific/images/shap_plots/2-class/false_positive_2.png)
+![images/shap_plots/2-class/false_positive_1.png](./TILDA-defect-classific/images/shap_plots/2-class/false_positive_1.png)
+![images/shap_plots/2-class/false_positive_2.png](./TILDA-defect-classific/images/shap_plots/2-class/false_positive_2.png)
 
 **False negative (Actual = “defect”, Predicted = “good”)**
 
@@ -234,6 +234,3 @@ These are the most important defects that needs to be greatly minimized if not e
 ![images/shap_plots/2-class/false_negative_1.png](./TILDA-defect-classific/images/shap_plots/2-class/false_negative_1.png)
 
 ![images/shap_plots/2-class/false_negative_2.png](./TILDA-defect-classific/images/shap_plots/2-class/false_negative_2.png)
-
-
-git ad
