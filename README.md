@@ -1,5 +1,13 @@
 **Defect detection and classification on industrial fabric**
 
+**Top line results:**
+
+(This is a work in progress.  The functions are included here in the repo.  The jupyter notebooks used to execute the code will be provided later)
+1.  I trained two CNN models, one to detect defects, another to identify what class the defect is.
+2.  The 2-class defect detection model as an ROC-AUC of **93%**, and a Precision for the _good_ class of **96%** at 50% threshold.
+3.  The 4-class defect identification model has an accuracy of **55%**, against a baseline of 25% (4 classes).  It works best for the _objects_ class at **73%** Recall, and worse for the _hole_ class at **21%** Recall.  These happen to be the most and least populous class repectively.
+4.  It appears that the two convolutional filter (kernal) sizes are targeted toward different defects, with the 4x4 being better for the _hole_ and 8x8 better for the _objects_.  A logical next step would be to build a model that employs at least these two dimensions of filters.
+
 INTRODUCTION
 
 Tilda (<https://www.tildafabricusa.com)>) is a fabric brand founded by Norwegian designer Tone Finnanger in 1999, best known for whimsical naive characters and charming fabric design.
