@@ -20,9 +20,7 @@ KEY RESULTS
 OVERVIEW OF DATA
 1. The data is massively imbalanced, with 90.5% if the images being in the “good” class.
 
-![image info](./TILDA-defect-classific/images/intro/pop_dist_all_samples.png)
-![Distribution of all 5 classes](./TILDA-defect-classific/images/introduction/pop_dist_all_samples.png)
-
+![image info](./TILDA-defect-classific/images/introduction/pop_dist_all_samples.png)
 ![Distribution of 4 defect classes](./TILDA-defect-classific/images/introduction/pop_dist_defects.png)
 
 Below are the actual number of images for each class
@@ -234,3 +232,52 @@ These are the most important defects that needs to be greatly minimized if not e
 ![images/shap_plots/2-class/false_negative_1.png](./TILDA-defect-classific/images/shap_plots/2-class/false_negative_1.png)
 
 ![images/shap_plots/2-class/false_negative_2.png](./TILDA-defect-classific/images/shap_plots/2-class/false_negative_2.png)
+
+DEFECT DETECTION (4-Class)
+
+When viewing the 4-class shapley plots, it is especially important to pay attention to the negative (blue) shapley values because they represent _counter-evidence_ of an image being in that class. Often an image is red on one side, but also blue or even blue on the other, thus the positive evidence all gets canceled.
+
+CORRECT PREDICTIONS
+
+1. Objects
+    Here are two examples in which there are strong red in classes other than the correct “object” classes, but those were overwhelmed by the strong negative values. Thus this makes the object class as the most likely prediction.
+
+    ![../images/shap_plots/4-class/objects-objects/GS_4cl_reload_shapval_4_16_img009.png](./TILDA-defect-classific/images/shap_plots/4-class/objects-objects/GS_4cl_reload_shapval_4_16_img009.png)
+
+    ![../images/shap_plots/4-class/objects-objects/GS_4cl_reload_shapval_4_16_img011.png](./TILDA-defect-classific/images/shap_plots/4-class/objects-objects/GS_4cl_reload_shapval_4_16_img011.png)
+
+2. Hole
+    On the other hand, this image is classified as hole mostly based only the positive shapley values of the “hole” category.
+
+    ![../images/shap_plots/4-class/hole-hole/GS_4cl_reload_shapval_4_16_img125.png](./TILDA-defect-classific/images/shap_plots/4-class/hole-hole/GS_4cl_reload_shapval_4_16_img125.png)
+
+3. Oil spot
+    Here is an image the can appear as an _oil spot_ or a _thread error_ to the human eye. However, the model correctly surmised there is more evidence for _oil spot_ and more counter-evidence against _thread error,_ and predicted _oil spot._
+
+    ![_../images/shap_plots/4-class/oil_spot-oil_spot/GS_4cl_reload_shapval_4_16_img170.png_](./TILDA-defect-classific/images/shap_plots/4-class/oil_spot-oil_spot/GS_4cl_reload_shapval_4_16_img170.png)
+
+4. Thread error
+    Below is another example of a close call between _thread error_ and _oil spot._ It is very challenging for the human eye to tell between the two, but in this case, the model predicted correctly.
+
+    ![../images/shap_plots/4-class/thread_error-thread_error/GS_4cl_reload_shapval_4_16_img185.png](./TILDA-defect-classific/images/shap_plots/4-class/thread_error-thread_error/GS_4cl_reload_shapval_4_16_img185.png)
+
+ERRORS
+
+For brevity, I will only discuss the three most common errors. They represent about 40% of the total mispredictions:
+
+1. Object (actual) --> Oil spot (predicted)
+    In this image, the model actual predicted there’s a 38% chance it is an object. However, it appeared tobe thrown off by the smearing of the image on the right side.
+
+
+    ![../images/shap_plots/4-class/objects-oil_spot/GS_4cl_reload_shapval_4_16_img007.png](./TILDA-defect-classific/images/shap_plots/4-class/objects-oil_spot/GS_4cl_reload_shapval_4_16_img007.png) 
+
+2. Hole --> Thread error
+    Honestly this looks more like a thread error to me. Again the model recognizes that there is a 26% chance it is a hole.
+
+    ![../images/shap_plots/4-class/objects-oil_spot/GS_4cl_reload_shapval_4_16_img035.png](./TILDA-defect-classific/images/shap_plots/4-class/hole-thread_error/GS_4cl_reload_shapval_4_16_img035.png) 
+
+
+3. Thread error --> Oil spot
+    I honestly do not know how the following image is a thread error. I think it is reasonable to classify it as a oil spot.
+
+    ![../images/shap_plots/4-class/thread_error-oil_spot/GS_4cl_reload_shapval_4_16_img048.png](./TILDA-defect-classific/images/shap_plots/4-class/thread_error-oil_spot/GS_4cl_reload_shapval_4_16_img048.png)
