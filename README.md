@@ -288,7 +288,7 @@ For brevity, I will only discuss the three most common errors. They represent ab
     
     I honestly do not know how the following image is a thread error. I think it is reasonable to classify it as a oil spot. (new)
 
-    ![../images/shap_plots/4-class/thread_error-oil_spot/GS_4cl_reload_shapval_4_16_img048.png](./TILDA-defect-classific/images/shap_plots/4-class/thread_error-oil_spot/GS_4cl_reload_shapval_4_16_img048.png =200x)
+    ![../images/shap_plots/4-class/thread_error-oil_spot/GS_4cl_reload_shapval_4_16_img048.png](./TILDA-defect-classific/images/shap_plots/4-class/thread_error-oil_spot/GS_4cl_reload_shapval_4_16_img048.png | width=200)
 
 
 
