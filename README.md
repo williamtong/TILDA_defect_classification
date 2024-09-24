@@ -91,10 +91,9 @@ ISSUES AND HOW THEY WERE ADDRESSED
 **Monochromity**: The as-downloaded images contain the full complement of the 3 RGB colors, all having the same values. I reduced the dimensions from 64x64x3 to 64x64x1. However, this is tricky as some libraries automatically rescale the images, which is not desirable. At the end, I wrote my own function to perform this task.
 
 **Dataset imbalance**: Each class is weighted by the inverse of its relative population during training. However, this is not sufficient. The problem is during stochastic gradient descent, the population of the minority class in each mini batch becomes so small that there is great variation from on mini batch to the next. For example, the hole class has only 337 images. The test set has 0.1 of the population (34 images). If we have 32 minibatches, we will end up with only 2 hole images for each mini batch.
-
 The solution is we upsample/downsample each class to a reasonable number. In the defect detection model, we downsample the ‘good’ class to ~5120 samples, and upsample each of the defect classes to ~1240 samples (summing to ~5120 samples). This way, the sample sizes are balanced, and each minibatch has a good distribution of each population.
 
-**Data augmentation**: It is a technique that involves generating additional images by modifying an original image, such as by flipping, rotating, reflecting, or changing the brightness and contrast of the image. Its use is widespread general image classification. However, in this case, I experimented with it and found the results to be markedly worse than just simple upsampling. Therefore I did not employ this technique in this work.
+**Data augmentation**: It is a technique that involves generating additional images by modifying an original image, such as by flipping, rotating, reflecting, or changing the brightness and contrast of the image. Its use is widespread general image classification. However, in this case, I experimented with it and found the results to be markedly _worse_ than just simple upsampling. Therefore I did not employ this technique in this work.
 
 **Contrast**: This is one sub-example of data augmentation and may shed light into why data augmentation does not work in this use case. I performed a quick experiment in which I rescaled the pixel intensity to 0 ≤ i ≤ 1 instead of just dividing by 255, the performance became worse. I believe that is because the absolute intensity contains information about an object or feature’s height or depth which would be distorted or lost when the scales are changed. By the same token you would not apply image rotation to an auto-driving use case, since cars are never upside down, or image reflection to facial recognition since there is a difference between one’s regular and reflected image (e.g. hair partition).
 
@@ -147,7 +146,7 @@ Note the recall values are very close to 100% due to rounding. It is conceivable
 
 **Defect IDENTIFICATION**
 
-Identification of the defects can be an important step to improving of the manufacturing process. From a modeling perspective, it presents a much more challenging problem. For one thing, the number of samples are small. Further, there are 4 possibilities of defects, so the probability of getting it right is only 25%. Note that this is now the baseline of the model: it must perform significantly above 25% for it to be called effective.
+Identification of the defects can be an important step to improving of the manufacturing process. From a modeling perspective, it presents a much more challenging problem. For one thing, the number of samples are small (see first table above _actual number of images for each class_). Further, there are 4 possibilities of defects, so the probability of getting it right is only about 25%. Note that 25% is the approximate baseline of the model: it must perform significantly above it for model to be called effective.
 
 A close inspection of the images of defects in the section earlier will reveal that many classifications are almost arbitrary. The oil spots appear to be just some shades on the textile. The holes do not always appear to be holes. The objects and thread error classes are also similar looking. Another issue is the imbalance of the data set. There are very few examples of the “hole” cases. Thus it is not surprising the models perform the worst for the class.
 
@@ -175,10 +174,9 @@ We can see the model a-2 is the best one, marginally better than b-1. The a-1 mo
 
 The following are the relevant confusion matrix for model B-2. Recall is a better metric here because a-prior we are not aware of any preference for a class, like we know the defect class is highly undesirable for the 2-class model and needs to be screened out.
 
-Here one can see the model performs especially well for the “objects” class and poorly for the “hole” class. These are the most and least populous class in the data set, so this is all expected.
+Here one can see the model performs especially well for the “objects” class and poorly for the “hole” class. These are the most and least populous class in the data set, respectively, so this is all expected.
 
 ![./TILDA-defect-classific/images/model_results/4-class_conf_matrix_count_8x8.png](./TILDA-defect-classific/images/model_results/4-class_conf_matrix_count_8x8.png)
-
 ![../../images/model_results/4-class_conf_matrix_recall_8x8.png](./TILDA-defect-classific/images/model_results/4-class_conf_matrix_recall_8x8.png)
 
 Model a-2 (4 x 16 filters)
@@ -195,9 +193,6 @@ There one direction to take in future work is to use a hybrid feature size appro
 1. There is strong evidence from the (4-class) defect identification model results that different filter sizes can target different defect types. The new model should have 2 or more filter sizes instead of one.
 
 2. The dearth of defect class samples is clearly a direct cause of inferior results (e.g. holes). One way to just artificially increase the weights of these samples so the model will pay more attention to them. However, this will be done at the expense of accuracy for the other classes. Another possible avenue to explore is to train a Generative Adversarial Network (GAN) to generate more defect samples. However, this work will require probably a lot more effort than building these two models so far, so the business case must justify it to proceed.
-
-
-
 
 
 
@@ -238,7 +233,6 @@ These tend to images that have small dots which are not considered defects. They
 These are the most important defects that needs to be greatly minimized if not eliminated. In most cases, the defects are just not very well formed.
 
 ![images/shap_plots/2-class/false_negative_1.png](./TILDA-defect-classific/images/shap_plots/2-class/false_negative_1.png)
-
 ![images/shap_plots/2-class/false_negative_2.png](./TILDA-defect-classific/images/shap_plots/2-class/false_negative_2.png)
 
 DEFECT DETECTION (4-Class)
@@ -248,23 +242,26 @@ When viewing the 4-class shapley plots, it is especially important to pay attent
 CORRECT PREDICTIONS
 
 1. Objects
+    
     Here are two examples in which there are strong red in classes other than the correct “object” classes, but those were overwhelmed by the strong negative values. Thus this makes the object class as the most likely prediction.
 
     ![../images/shap_plots/4-class/objects-objects/GS_4cl_reload_shapval_4_16_img009.png](./TILDA-defect-classific/images/shap_plots/4-class/objects-objects/GS_4cl_reload_shapval_4_16_img009.png)
-
     ![../images/shap_plots/4-class/objects-objects/GS_4cl_reload_shapval_4_16_img011.png](./TILDA-defect-classific/images/shap_plots/4-class/objects-objects/GS_4cl_reload_shapval_4_16_img011.png)
 
 2. Hole
+    
     On the other hand, this image is classified as hole mostly based only the positive shapley values of the “hole” category.
 
     ![../images/shap_plots/4-class/hole-hole/GS_4cl_reload_shapval_4_16_img125.png](./TILDA-defect-classific/images/shap_plots/4-class/hole-hole/GS_4cl_reload_shapval_4_16_img125.png)
 
 3. Oil spot
+    
     Here is an image the can appear as an _oil spot_ or a _thread error_ to the human eye. However, the model correctly surmised there is more evidence for _oil spot_ and more counter-evidence against _thread error,_ and predicted _oil spot._
 
     ![_../images/shap_plots/4-class/oil_spot-oil_spot/GS_4cl_reload_shapval_4_16_img170.png_](./TILDA-defect-classific/images/shap_plots/4-class/oil_spot-oil_spot/GS_4cl_reload_shapval_4_16_img170.png)
 
 4. Thread error
+    
     Below is another example of a close call between _thread error_ and _oil spot._ It is very challenging for the human eye to tell between the two, but in this case, the model predicted correctly.
 
     ![../images/shap_plots/4-class/thread_error-thread_error/GS_4cl_reload_shapval_4_16_img185.png](./TILDA-defect-classific/images/shap_plots/4-class/thread_error-thread_error/GS_4cl_reload_shapval_4_16_img185.png)
@@ -274,21 +271,24 @@ ERRORS
 For brevity, I will only discuss the three most common errors. They represent about 40% of the total mispredictions:
 
 1. Object (actual) --> Oil spot (predicted)
-    In this image, the model actual predicted there’s a 38% chance it is an object. However, it appeared tobe thrown off by the smearing of the image on the right side.
+    
+    In this image, the model actual predicted there’s a 38% chance it is an object. However, it appeared to be thrown off by the smearing of the image on the right side.
 
 
     ![../images/shap_plots/4-class/objects-oil_spot/GS_4cl_reload_shapval_4_16_img007.png](./TILDA-defect-classific/images/shap_plots/4-class/objects-oil_spot/GS_4cl_reload_shapval_4_16_img007.png) 
 
 2. Hole --> Thread error
+    
     Honestly this looks more like a thread error to me. Again the model recognizes that there is a 26% chance it is a hole.
 
     ![../images/shap_plots/4-class/objects-oil_spot/GS_4cl_reload_shapval_4_16_img035.png](./TILDA-defect-classific/images/shap_plots/4-class/hole-thread_error/GS_4cl_reload_shapval_4_16_img035.png) 
 
 
 3. Thread error --> Oil spot
-    I honestly do not know how the following image is a thread error. I think it is reasonable to classify it as a oil spot.
+    
+    I honestly do not know how the following image is a thread error. I think it is reasonable to classify it as a oil spot. (new)
 
-    ![../images/shap_plots/4-class/thread_error-oil_spot/GS_4cl_reload_shapval_4_16_img048.png](./TILDA-defect-classific/images/shap_plots/4-class/thread_error-oil_spot/GS_4cl_reload_shapval_4_16_img048.png)
+    ![../images/shap_plots/4-class/thread_error-oil_spot/GS_4cl_reload_shapval_4_16_img048.png](./TILDA-defect-classific/images/shap_plots/4-class/thread_error-oil_spot/GS_4cl_reload_shapval_4_16_img048.png =200x)
 
 
 
