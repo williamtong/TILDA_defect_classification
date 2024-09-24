@@ -11,6 +11,7 @@
 INTRODUCTION
 
 Tilda (<https://www.tildafabricusa.com)>) is a fabric brand founded by Norwegian designer Tone Finnanger in 1999, best known for whimsical naive characters and charming fabric design.
+
 ![Tilda products](./TILDA-defect-classific/images/introduction/living_room.jpg)
 
 
@@ -28,8 +29,8 @@ KEY RESULTS
 OVERVIEW OF DATA
 1. The data is massively imbalanced, with 90.5% if the images being in the “good” class.
 
-![image info](./TILDA-defect-classific/images/introduction/pop_dist_all_samples.png)
-![Distribution of 4 defect classes](./TILDA-defect-classific/images/introduction/pop_dist_defects.png)
+<p><img src='./TILDA-defect-classific/images/introduction/pop_dist_all_samples.png' width="800"><p>
+<p><img src='./TILDA-defect-classific/images/introduction/pop_dist_defects.png' width="800"><p>
 
 Below are the actual number of images for each class
 
@@ -37,38 +38,37 @@ Below are the actual number of images for each class
 | --- | --- |
 | Good | 23170 |
 | Thread error | 620 |
-| Objects | 837 |
 | Oil spot | 636 |
 | Hole | 337 |
+| Objects | 837 |
+
 
 Note that even for the defects, there is a strong imbalance. The number of hole samples is less than half of the Objects. This helps explain why the hole results are inferior to the others.
 
 SAMPLES OF IMAGES FROM EACH CLASS:
 
 Good
-
-![TILDA-defect-classific/images/intro/good.png](./TILDA-defect-classific/images/introduction/good.png)
+<p><img src='./TILDA-defect-classific/images/introduction/good.png' width="1000"><p>
 
 Thread error (Defects)
-
-![TILDA-defect-classific/images/intro/thread_error.png](./TILDA-defect-classific/images/introduction/thread_error.png)
-
-Objects (Defects)
-![TILDA-defect-classific/images/intro/objects.png](./TILDA-defect-classific/images/introduction/objects.png)
+<p><img src='./TILDA-defect-classific/images/introduction/thread_error.png' width="1000"><p>
 
 Oil spot (Defects)
-![TILDA-defect-classific/images/intro/oil_spot.png](./TILDA-defect-classific/images/introduction/oil_spot.png)
+<p><img src='./TILDA-defect-classific/images/introduction/oil_spot.png' width="1000"><p>
 
 Hole (Defects)
-![TILDA-defect-classific/images/intro/hole.png](./TILDA-defect-classific/images/introduction/hole.png)
+<p><img src='./TILDA-defect-classific/images/introduction/hole.png' width="1000"><p>
+
+Objects (Defects)
+<p><img src='./TILDA-defect-classific/images/introduction/objects.png' width="1000"><p>
 
 From the above random samples, one can see the original classification may not have been perfect. For example,
 
-1. Sample 128_patch2-3.png under thread error does not contain any obvious defect to the naked eye.
-2. Sample 086_patch4-3.png classified as good appears to have a defect that looks like a thread error on it.
-3. Sample 034_patch3-1.png classified as a hole error does not appear to have a hole.
+1. Sample 086_patch4-3.png (bottom row, 4th from left) classified as _good_ appears to have a defect that looks like a thread error on it.
+2. Sample 128_patch2-3.png (bottom row, middle) under _thread error_ does not contain any obvious defect to the naked eye.
+3. Sample 034_patch3-1.png (top row, middle) classified as a _hole_ error does not appear to have a hole.
 
-It is also interesting to note that the holes appear as bright spot, which leads me to believe that the contrast for all the samples have been reverse. However, that does not affect the modeling.
+It is also interesting to note that the holes appear as bright spot, which leads me to believe that the contrast for all the samples have been reverse, or there is an illumination source from below the sample. However, that does not affect the modeling.
 
 **MODEL OVERVIEW**
 
@@ -82,7 +82,7 @@ The images are 64x64 pixels. We employ a segmented approach. First we use a 2-cl
 
 The final output block is quite generic. The size of the fully connected layer is ¼ of the number of conv. filters in the last conv. block. The softmax layer becomes a signmoid layer when the number of classes = 2.
 
-![./TILDA-defect-classific/images/model_results/CNN_diagram.png](./TILDA-defect-classific/images/model_results/CNN_diagram.png)
+<p><img src='./TILDA-defect-classific/images/model_results/CNN_diagram.png' width="1000"><p>
 
 ISSUES AND HOW THEY WERE ADDRESSED
 
@@ -117,7 +117,7 @@ Receiver Operational Characteristics (ROC-AUC)
 
 The following shows the ROC for the model B-1:
 
-![../../images/model_results/roc_auc_B1.png](./TILDA-defect-classific/images/model_results/roc_auc_B1.png)
+<p><img src='./TILDA-defect-classific/images/model_results/roc_auc_B1.png' width="600"><p>
 
 Precision
 
@@ -176,8 +176,8 @@ The following are the relevant confusion matrix for model B-2. Recall is a bette
 
 Here one can see the model performs especially well for the “objects” class and poorly for the “hole” class. These are the most and least populous class in the data set, respectively, so this is all expected.
 
-![./TILDA-defect-classific/images/model_results/4-class_conf_matrix_count_8x8.png](./TILDA-defect-classific/images/model_results/4-class_conf_matrix_count_8x8.png)
-![../../images/model_results/4-class_conf_matrix_recall_8x8.png](./TILDA-defect-classific/images/model_results/4-class_conf_matrix_recall_8x8.png)
+<p><img src='./TILDA-defect-classific/images/model_results/4-class_conf_matrix_count_8x8.png' width="600"><p>
+<img src='./TILDA-defect-classific/images/model_results/4-class_conf_matrix_recall_8x8.png' width="600"><p>
 
 Model a-2 (4 x 16 filters)
 
@@ -185,8 +185,8 @@ It is educational to compare the confusion matrices of B-1 to A-2, the model tha
 
 There one direction to take in future work is to use a hybrid feature size approach (mix of 4x4 and 8x8 filters) for our CNN model.
 
-![Confustion matrix for sample count of model b-2 (4x4 filters-16 first block)](./TILDA-defect-classific/images/model_results/4-class_conf_matrix_count_4x16.png)
-![./TILDA-defect-classific/images/model_results/4-class_conf_matrix_recall_4x16.png](TILDA-defect-classific/images/model_results/4-class_conf_matrix_recall_4x16.png)
+<p><img src='./TILDA-defect-classific/images/model_results/4-class_conf_matrix_count_4x16.png' width="600"><p>
+<img src='./TILDA-defect-classific/images/model_results/4-class_conf_matrix_recall_4x16.png' width="600"><p>
 
 **Improvements opportunities**
 
@@ -208,65 +208,65 @@ DEFECT DETECTION (2-CLASS)
 
 The image below shows the negative (blue) and positive (red) shapley values for each pixel of the image. The image was correctly classified by the model as “defect” (87.4% probability). One can see a big contributor is the trench-like vertical feature, which has a concentration of red dots.
 
-![images/shap_plots/2-class/true_positive_1.png](./TILDA-defect-classific/images/shap_plots/2-class/true_positive_1.png)
+<p><img src='./TILDA-defect-classific/images/shap_plots/2-class/true_positive_1.png' width="800"><p>
 
 Another defect example is following, where there is a concentration of red pixels within and near the edges of the white diagonal streak. It may be that the edges are indicators of a defect. There are blue pixels near the feature edge as well, but not as numerous as red pixels.
 
-![images/shap_plots/2-class/true_positive_2.png](./TILDA-defect-classific/images/shap_plots/2-class/true_positive_2.png)
+<p><img src='./TILDA-defect-classific/images/shap_plots/2-class/true_positive_2.png' width="800"><p>
 
 **True negative (Actual = “good”, predicted = “good”)**
 
 For the correctly predicted "good" images, in general the red pixels tend to be less clustered, with less intensity, even when they are more numerous than the negative (blue) pixels.
 
-![images/shap_plots/2-class/true_negative_1.png](./TILDA-defect-classific/images/shap_plots/2-class/true_negative_1.png)
-![images/shap_plots/2-class/true_negative_2.png](./TILDA-defect-classific/images/shap_plots/2-class/true_negative_2.png)
+<p><img src='./TILDA-defect-classific/images/shap_plots/2-class/true_negative_1.png' width="800"><p>
+<p><img src='./TILDA-defect-classific/images/shap_plots/2-class/true_negative_2.png' width="800"><p>
 
 **False positives (Actual = “Good”, Predicted = “Defect”)**
 
 These tend to images that have small dots which are not considered defects. They typically are just “blemishes” that got misrecognized by the model as a defect.
 
-![images/shap_plots/2-class/false_positive_1.png](./TILDA-defect-classific/images/shap_plots/2-class/false_positive_1.png)
-![images/shap_plots/2-class/false_positive_2.png](./TILDA-defect-classific/images/shap_plots/2-class/false_positive_2.png)
+<p><img src='./TILDA-defect-classific/images/shap_plots/2-class/false_positive_1.png' width="800"><p>
+<p><img src='./TILDA-defect-classific/images/shap_plots/2-class/false_positive_2.png' width="800"><p>
 
 **False negative (Actual = “defect”, Predicted = “good”)**
 
 These are the most important defects that needs to be greatly minimized if not eliminated. In most cases, the defects are just not very well formed.
 
-![images/shap_plots/2-class/false_negative_1.png](./TILDA-defect-classific/images/shap_plots/2-class/false_negative_1.png)
-![images/shap_plots/2-class/false_negative_2.png](./TILDA-defect-classific/images/shap_plots/2-class/false_negative_2.png)
+<p><img src='./TILDA-defect-classific/images/shap_plots/2-class/false_negative_1.png' width="800"><p>
+<p><img src='./TILDA-defect-classific/images/shap_plots/2-class/false_negative_2.png' width="800"><p>
 
 DEFECT DETECTION (4-Class)
 
 When viewing the 4-class shapley plots, it is especially important to pay attention to the negative (blue) shapley values because they represent _counter-evidence_ of an image being in that class. Often an image is red on one side, but also blue or even blue on the other, thus the positive evidence all gets canceled.
 
-CORRECT PREDICTIONS
+**CORRECT PREDICTIONS**
 
 1. Objects
     
     Here are two examples in which there are strong red in classes other than the correct “object” classes, but those were overwhelmed by the strong negative values. Thus this makes the object class as the most likely prediction.
 
-    ![../images/shap_plots/4-class/objects-objects/GS_4cl_reload_shapval_4_16_img009.png](./TILDA-defect-classific/images/shap_plots/4-class/objects-objects/GS_4cl_reload_shapval_4_16_img009.png)
-    ![../images/shap_plots/4-class/objects-objects/GS_4cl_reload_shapval_4_16_img011.png](./TILDA-defect-classific/images/shap_plots/4-class/objects-objects/GS_4cl_reload_shapval_4_16_img011.png)
+    <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/objects-objects/GS_4cl_reload_shapval_4_16_img009.png' width="800"><p>
+    <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/objects-objects/GS_4cl_reload_shapval_4_16_img011.png' width="800"><p>
 
 2. Hole
     
     On the other hand, this image is classified as hole mostly based only the positive shapley values of the “hole” category.
 
-    ![../images/shap_plots/4-class/hole-hole/GS_4cl_reload_shapval_4_16_img125.png](./TILDA-defect-classific/images/shap_plots/4-class/hole-hole/GS_4cl_reload_shapval_4_16_img125.png)
+    <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/hole-hole/GS_4cl_reload_shapval_4_16_img125.png' width="800"><p>
 
 3. Oil spot
     
     Here is an image the can appear as an _oil spot_ or a _thread error_ to the human eye. However, the model correctly surmised there is more evidence for _oil spot_ and more counter-evidence against _thread error,_ and predicted _oil spot._
 
-    ![_../images/shap_plots/4-class/oil_spot-oil_spot/GS_4cl_reload_shapval_4_16_img170.png_](./TILDA-defect-classific/images/shap_plots/4-class/oil_spot-oil_spot/GS_4cl_reload_shapval_4_16_img170.png)
+    <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/oil_spot-oil_spot/GS_4cl_reload_shapval_4_16_img170.png' width="800"><p>
 
 4. Thread error
     
     Below is another example of a close call between _thread error_ and _oil spot._ It is very challenging for the human eye to tell between the two, but in this case, the model predicted correctly.
 
-    ![../images/shap_plots/4-class/thread_error-thread_error/GS_4cl_reload_shapval_4_16_img185.png](./TILDA-defect-classific/images/shap_plots/4-class/thread_error-thread_error/GS_4cl_reload_shapval_4_16_img185.png)
+    <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/thread_error-thread_error/GS_4cl_reload_shapval_4_16_img185.png' width="800"><p>
 
-ERRORS
+**ERRORS**
 
 For brevity, I will only discuss the three most common errors. They represent about 40% of the total mispredictions:
 
@@ -275,25 +275,19 @@ For brevity, I will only discuss the three most common errors. They represent ab
     In this image, the model actual predicted there’s a 38% chance it is an object. However, it appeared to be thrown off by the smearing of the image on the right side.
 
 
-    ![../images/shap_plots/4-class/objects-oil_spot/GS_4cl_reload_shapval_4_16_img007.png](./TILDA-defect-classific/images/shap_plots/4-class/objects-oil_spot/GS_4cl_reload_shapval_4_16_img007.png) 
+    <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/objects-oil_spot/GS_4cl_reload_shapval_4_16_img007.png' width="800"><p>
 
 2. Hole --> Thread error
     
     Honestly this looks more like a thread error to me. Again the model recognizes that there is a 26% chance it is a hole.
 
-    ![../images/shap_plots/4-class/objects-oil_spot/GS_4cl_reload_shapval_4_16_img035.png](./TILDA-defect-classific/images/shap_plots/4-class/hole-thread_error/GS_4cl_reload_shapval_4_16_img035.png) 
-
+    <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/hole-thread_error/GS_4cl_reload_shapval_4_16_img035.png' width="800"><p>
 
 3. Thread error --> Oil spot
     
     I frankly do not know how the following image is a thread error. I think it is reasonable to classify it as a oil spot. (new)
 
-    ![../images/shap_plots/4-class/thread_error-oil_spot/GS_4cl_reload_shapval_4_16_img048.png](./TILDA-defect-classific/images/shap_plots/4-class/thread_error-oil_spot/GS_4cl_reload_shapval_4_16_img048.png =250x250)
-
-    ![](<img src="./TILDA-defect-classific/images/shap_plots/4-class/thread_error-oil_spot/GS_4cl_reload_shapval_4_16_img048.png" width="100" height="100"/>)
-
-
-
+    <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/thread_error-oil_spot/GS_4cl_reload_shapval_4_16_img048.png' width="800"><p>
 
 APPENDIX: CNN FILTERS  (For curiosity only, not much utility in this use case)
 
@@ -307,30 +301,28 @@ CNN FILTERS FOR **2-CLASS** DEFECT DETECTION MODEL:
 
 1<sup>st</sup> layer filters
 
-![2-class first-block filters (random sample of 128)](./TILDA-defect-classific/images/CNN_filters/2class_layer0filters.png)
+<p><img src='./TILDA-defect-classific/images/CNN_filters/2class_layer0filters.png' width="1000"><p>
 
 
 2nd block filters (random sample of 128)
 
-![2-class 3rd block filters (random sample of 128)](./TILDA-defect-classific/images/CNN_filters/2class_layer4filters.png)
+<p><img src='./TILDA-defect-classific/images/CNN_filters/2class_layer4filters.png' width="1000"><p>
 
 
 3<sup>rd</sup> block filters (random sample of 128)
 
-![2-class 3rd block filters (random sample of 128)](./TILDA-defect-classific/images/CNN_filters/2class_layer8filters.png)
+<p><img src='./TILDA-defect-classific/images/CNN_filters/2class_layer8filters.png' width="1000"><p>
 
 CNN FILTERS FOR **4-CLASS** DEFECT IDENTIFICATION MODEL:
 
 1<sup>st</sup> layer filters
 
-![2-class first-block filters (random sample of 128)](./TILDA-defect-classific/images/CNN_filters/4class_layer0filters.png)
-
+<p><img src='./TILDA-defect-classific/images/CNN_filters/4class_layer0filters.png' width="1000"><p>
 
 2nd block filters (random sample of 128)
 
-![2-class 3rd block filters (random sample of 128)](./TILDA-defect-classific/images/CNN_filters/4class_layer4filters.png)
-
+<p><img src='./TILDA-defect-classific/images/CNN_filters/4class_layer4filters.png' width="1000"><p>
 
 3<sup>rd</sup> block filters (random sample of 128)
 
-![2-class 3rd block filters (random sample of 128)](./TILDA-defect-classific/images/CNN_filters/4class_layer8filters.png)
+<p><img src='./TILDA-defect-classific/images/CNN_filters/4class_layer8filters.png' width="1000"><p>
