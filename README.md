@@ -2,7 +2,7 @@
 
 **Top line results:**
 
-(This is a work in progress.  The functions are included here in the repo.  The jupyter notebooks used to execute the code will be provided later)
+(This is a work in progress.  The functions are included here in the repo.  The jupyter notebooks used to execute the code will be provided later.  Also, we have new results that are being analyzed now.  Stay tuned.)
 1.  I trained two CNN models, one to detect defects, another to identify what class the defect is.
 2.  The 2-class defect detection model as an ROC-AUC of **93%**, and a Precision for the _good_ class of **96%** at 50% threshold.
 3.  The 4-class defect identification model has an accuracy of **55%**, against a baseline of 25% (4 classes).  It works best for the _objects_ class at **73%** Recall, and worse for the _hole_ class at **21%** Recall.  These happen to be the most and least populous class repectively.
@@ -99,7 +99,7 @@ The solution is we upsample/downsample each class to a reasonable number. In the
 
 I trained four model with the following parameters. They will be referred to as follows.
 
-|     | **4x4 filters** | **8x8 filters** |
+|     | **4x4 a** | **8x8 filters** |
 | --- | --- | --- |
 | **8 filters + 16 filters + 32 filters (8,16,32)** | A-1 | B-1 |
 | **16 filters + 32 filters + 64 filters (16,32,64)** | A-2 | B-2 |
@@ -119,9 +119,13 @@ The following shows the ROC for the model B-1:
 
 <p><img src='./TILDA-defect-classific/images/model_results/roc_auc_B1.png' width="600"><p>
 
-Precision
 
-In a typical use case, the precision for the “good” class is the most important criterion, because we don’t want the “defected” textile to be mixed in with the “good” and shipped to the customers. The following is the precision confusion matrix for the model at 50% threshold with 8x8 (16,32, 64) filters. The threshold is set to 0.5. As one can see, the good predictions are 95% correct and the defect predictions are 92% correct.
+In a typical use case, there are two metrics that are important. 
+1.  Precision for the “good” class, because we don’t want the “defected” textile to be mixed in with the “good” and shipped to the customers. 
+2.  Recall for the "defect" class, because we want to know how many actual defects were flagged by the model.
+
+The following is the precision confusion matrix for the model at 50% threshold with 8x8 (16, 32, 64) filters. The threshold is set to 0.5, i.e. the prediction above 0.5 is classifed as a defect, but below 0.5 is classified as a good sample.
+
 
 Precision for the “good” class at 50% threshold.
 
@@ -130,22 +134,26 @@ Precision for the “good” class at 50% threshold.
 | **8 filters + 16 filters + 32 filters (8,16,32)** | 94% | 96% |
 | **16 filters + 32 filters + 64 filters (16,32,64)** | 95% | 95% |
 
-Recall for the “good” class at 50% threshold.
+Recall for the “defect" class at 50% threshold.
 
 |     | **4x4 filters** | **8x8 filters** |
 | --- | --- | --- |
-| **8 filters + 16 filters + 32 filters (8,16,32)** | 100% | 99% |
-| **16 filters + 32 filters + 64 filters (16,32,64)** | 100% | 99% |
+| **8 filters + 16 filters + 32 filters (8,16,32)** | 43% | 57% |
+| **16 filters + 32 filters + 64 filters (16,32,64)** | 46% | 47% |
 
-Note the recall values are very close to 100% due to rounding. It is conceivable to raise the value of Precision for the good class by moving the threshold without sacrificing too many “good” images.
 
 **2-class defect detection summary**
+As one can see, the good predictions are 95% correct, with the B-1 model being the best, so if model predicts a sample is good, you can be 95% confident that it is good. On the other hand, this is only 6% improvement over the baseline, which is to guess that all samples to be good.  
 
-1. Overall, the results are quite satisfactory given the simplicity of the model. The ROC-AUC of 93 is quite impression, especially given the abundance of images that are hard to classified even with the human eye.
-2. It is possible that the B2 model, which was the most elaborate model and had been expected to produce the best results, was overfitting the data, which does not have such a large defect set.
+The flip side of the same coin is the recall for the defects.  The best model (B-1) was only able to flag down the 57% of the defects.  It indicates about 4 of out 10 defected samples were missed by the model.  There is room for improvement for the model.
+
+As mentioned above, this is a challenging set of data.   
+1.  Unlike other samples we have seen, this data set challenges even the human eye to classify. Many of the samples may be labeled incorrectly.
+2.  The data set is highly inbalanced, with only about 10% or 2,500 samples of the "defect" class of data.  This make training a good model even more challenging.   
+
+Future work will include trying different filter sizes, or using a combination of different filter sizes in the same network.
 
 **Defect IDENTIFICATION**
-
 Identification of the defects can be an important step to improving of the manufacturing process. From a modeling perspective, it presents a much more challenging problem. For one thing, the number of samples are small (see first table above _actual number of images for each class_). Further, there are 4 possibilities of defects, so the probability of getting it right is only about 25%. Note that 25% is the approximate baseline of the model: it must perform significantly above it for model to be called effective.
 
 A close inspection of the images of defects in the section earlier will reveal that many classifications are almost arbitrary. The oil spots appear to be just some shades on the textile. The holes do not always appear to be holes. The objects and thread error classes are also similar looking. Another issue is the imbalance of the data set. There are very few examples of the “hole” cases. Thus it is not surprising the models perform the worst for the class.
@@ -172,7 +180,7 @@ We can see the model a-2 is the best one, marginally better than b-1. The a-1 mo
 
 **Model b-1 (8 x 8 filters)**
 
-The following are the relevant confusion matrix for model B-2. Recall is a better metric here because a-prior we are not aware of any preference for a class, like we know the defect class is highly undesirable for the 2-class model and needs to be screened out.
+The following are the relevant confusion matrix for model B-2. Recall is a better metric here because _a-priori_ we are not aware of any preference for a class, like we know the defect class is highly undesirable for the 2-class model and needs to be screened out.
 
 Here one can see the model performs especially well for the “objects” class and poorly for the “hole” class. These are the most and least populous class in the data set, respectively, so this is all expected.
 
@@ -194,6 +202,7 @@ There one direction to take in future work is to use a hybrid feature size appro
 
 2. The dearth of defect class samples is clearly a direct cause of inferior results (e.g. holes). One way to just artificially increase the weights of these samples so the model will pay more attention to them. However, this will be done at the expense of accuracy for the other classes. Another possible avenue to explore is to train a Generative Adversarial Network (GAN) to generate more defect samples. However, this work will require probably a lot more effort than building these two models so far, so the business case must justify it to proceed.
 
+(NB:  Number 1 above has been done with promising preliminary results.  They are being analyzed and written up.  Stay tuned.)
 
 
 **_SHAPLEY value analysis_**
