@@ -4,15 +4,15 @@
 
 (This is a work in progress.  The functions are included here in the repo.  The jupyter notebooks used to execute the code will be provided later.  Also, we have new results that are being analyzed now.  Stay tuned.)
 1.  I trained two CNN models, one to detect defects, another to identify what class the defect is.
-2.  The 2-class defect detection model as an ROC-AUC of **93%**, and a Precision for the _defect_ class of **57%** at 50% threshold.
-3.  The 4-class defect identification model has an accuracy of **55%**, against a baseline of 25% (4 classes).  It works best for the _objects_ class at **73%** Recall, and worse for the _hole_ class at **21%** Recall.  These happen to be the most and least populous class repectively.
+2.  The best 2-class defect detection model as an ROC-AUC of **93%**, a Recall for the _good_ class of **96%**, and a Precision for the _defect_ class of **57%** at 50% threshold.
+3.  The best 4-class defect identification model has an accuracy of **55%**, against a baseline of 25% (4 classes). It works best for the _objects_ defect class at **73%** Recall, and worse for the _hole_ class at **21%** Recall. These happen to be the most and least populous class repectively.
 4.  It appears that the two convolutional filter (kernal) sizes are targeted toward different defects, with the 4x4 being better for the _hole_ and 8x8 better for the _objects_.  A logical next step would be to build a model that employs at least these two dimensions of filters.
 
 INTRODUCTION
 
 Tilda (<https://www.tildafabricusa.com)>) is a fabric brand founded by Norwegian designer Tone Finnanger in 1999, best known for whimsical naive characters and charming fabric design.
 
-![Tilda products](./TILDA-defect-classific/images/introduction/living_room.jpg)
+<p><img src='./TILDA-defect-classific/images/introduction/living_room.jpg' width="500"><p>
 
 
 
@@ -22,12 +22,8 @@ GOALS
 1. Build a model that will detect defects images that contain defects. (2-class)
 2. Build a model that will identify the defects in each image. (4-class)
 
-KEY RESULTS
-1. For the 2-class defect detection model, we achieved precision of 0.96 for the good class, and recall of 0.57 for the defect class. The Area Under of th Curve (AUC) for the ROC is 0.93.
-2. For the 4-class defect identification, we achieve an overall accuracy of 0.64, with the accuracies of 0.44, 0.60, 0.83, 0.79 for the defect classes of hole, objects, oil spot, thread error.
-
 OVERVIEW OF DATA
-1. The data is massively imbalanced, with 90.5% if the images being in the “good” class.
+1. The data is massively imbalanced, with 90.5% if the images being in the _good_ class.
 
 <p><img src='./TILDA-defect-classific/images/introduction/pop_dist_all_samples.png' width="800"><p>
 <p><img src='./TILDA-defect-classific/images/introduction/pop_dist_defects.png' width="800"><p>
@@ -121,8 +117,8 @@ The following shows the ROC for the model B-1:
 
 
 In a typical use case, there are two metrics that are important. 
-1.  Precision for the “good” class, because we don’t want the “defected” textile to be mixed in with the “good” and shipped to the customers. 
-2.  Recall for the "defect" class, because we want to know how many actual defects were flagged by the model.
+1.  Precision for the _good_ class, because we don’t want the “defected” textile to be mixed in with the “good” and shipped to the customers. 
+2.  Recall for the _defect_ class, because we want to know how many actual defects were flagged by the model.
 
 The following is the precision confusion matrix for the model at 50% threshold with 8x8 (16, 32, 64) filters. The threshold is set to 0.5, i.e. the prediction above 0.5 is classifed as a defect, but below 0.5 is classified as a good sample.
 
@@ -149,7 +145,7 @@ The flip side of the same coin is the recall for the defects.  The best model (B
 
 As mentioned above, this is a challenging set of data.   
 1.  Unlike other samples we have seen, this data set challenges even the human eye to classify. Many of the samples may be labeled incorrectly.
-2.  The data set is highly inbalanced, with only about 10% or 2,500 samples of the "defect" class of data.  This make training a good model even more challenging.   
+2.  The data set is highly inbalanced, with only about 10% or 2,500 samples of the _defect_ class of data.  This make training a good model even more challenging.   
 
 Future work will include trying different filter sizes, or using a combination of different filter sizes in the same network.
 
@@ -225,7 +221,7 @@ Another defect example is following, where there is a concentration of red pixel
 
 **True negative (Actual = “good”, predicted = “good”)**
 
-For the correctly predicted "good" images, in general the red pixels tend to be less clustered, with less intensity, even when they are more numerous than the negative (blue) pixels.
+For the correctly predicted +good_ images, in general the red pixels tend to be less clustered, with less intensity, even when they are more numerous than the negative (blue) pixels.
 
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/true_negative_1.png' width="800"><p>
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/true_negative_2.png' width="800"><p>
