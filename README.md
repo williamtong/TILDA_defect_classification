@@ -119,7 +119,6 @@ The following shows the ROC for the model B-1:
 
 <p><img src='./TILDA-defect-classific/images/model_results/roc_auc_B1.png' width="600"><p>
 
-Precision
 
 In a typical use case, there are two metrics that are important. 
 1.  Precision for the “good” class, because we don’t want the “defected” textile to be mixed in with the “good” and shipped to the customers. 
