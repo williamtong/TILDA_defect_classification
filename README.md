@@ -23,7 +23,7 @@ GOALS
 2. Build a model that will identify the defects in each image. (4-class)
 
 KEY RESULTS
-1. For the 2-class defect detection model, we achieved precision of 0.95 and 0.94, and recall if 0.997 and 0.49 for the good and defect class. The Area Under of th Curve (AUC) for the ROC is 0.90.
+1. For the 2-class defect detection model, we achieved precision of 0.96 for the good class, and recall of 0.57 for the defect class. The Area Under of th Curve (AUC) for the ROC is 0.93.
 2. For the 4-class defect identification, we achieve an overall accuracy of 0.64, with the accuracies of 0.44, 0.60, 0.83, 0.79 for the defect classes of hole, objects, oil spot, thread error.
 
 OVERVIEW OF DATA
