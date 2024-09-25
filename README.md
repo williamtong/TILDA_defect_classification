@@ -97,23 +97,23 @@ The solution is we upsample/downsample each class to a reasonable number. In the
 
 **Contrast**: This is one sub-example of data augmentation and may shed light into why data augmentation does not work in this use case. I performed a quick experiment in which I rescaled the pixel intensity to 0 ≤ i ≤ 1 instead of just dividing by 255, the performance became worse. I believe that is because the absolute intensity contains information about an object or feature’s height or depth which would be distorted or lost when the scales are changed. By the same token you would not apply image rotation to an auto-driving use case, since cars are never upside down, or image reflection to facial recognition since there is a difference between one’s regular and reflected image (e.g. hair partition).
 
-I trained four model with the following parameters. They will be referred to as follows.
+I trained six model with the following parameters. They will be referred to as follows.
 
-|     | **4x4 filters** | **8x8 filters** |
-| --- | --- | --- |
-| **8 filters + 16 filters + 32 filters (8,16,32)** | A-1 | B-1 |
-| **16 filters + 32 filters + 64 filters (16,32,64)** | A-2 | B-2 |
+|     | **5x5 filters** | **7x7 filters** | **9x9 filters** |
+| --- | --- | --- | --- |
+| **8 filters + 16 filters + 32 filters (8,16,32)** | A-1 | B-1 | C-1 |
+| **16 filters + 32 filters + 64 filters (16,32,64)** | A-2 | B-2 | C-2 |
+
 
 **_RESULTS_**
 
 **Defect DETECTION**
 
 Receiver Operational Characteristics (ROC-AUC)
-
-|     | **4x4 filters** | **8x8 filters** |
-| --- | --- | --- |
-| **8 filters + 16 filters + 32 filters (8,16,32)** | 89% | 93% |
-| **16 filters + 32 filters + 64 filters (16,32,64)** | 93% | 90% |
+|     | **5x5 filters** | **7x7 filters** | **9x9 filters** |
+| --- | --- | --- | --- |
+| **8 filters + 16 filters + 32 filters (8,16,32)** | 91.8% | 91.8% | 88.4% |
+| **16 filters + 32 filters + 64 filters (16,32,64)** | 92.4% | 89.2% | 89.8% |
 
 The following shows the ROC for the model B-1:
 
@@ -125,19 +125,20 @@ In a typical use case, the precision for the “good” class is the most import
 
 Precision for the “good” class at 50% threshold.
 
-|     | **4x4 filters** | **8x8 filters** |
-| --- | --- | --- |
-| **8 filters + 16 filters + 32 filters (8,16,32)** | 94% | 96% |
-| **16 filters + 32 filters + 64 filters (16,32,64)** | 95% | 95% |
+|     | **5x5 filters** | **7x7 filters** | **9x9 filters** |
+| --- | --- | --- | --- |
+| **8 filters + 16 filters + 32 filters (8,16,32)** | 95.0%<sup>*</sup> | 95.0%<sup>*</sup> | 95.0%<sup>*</sup> |
+| **16 filters + 32 filters + 64 filters (16,32,64)** | 95.4% | 96.1% | 94.4% |
+<sup>*</sup> These values appear the same only by co-incidence.   They are different after the 3<sup>rd</sup> significant figure.
 
-Recall for the “good” class at 50% threshold.
+Recall for the "defect" class at 50% threshold.
 
-|     | **4x4 filters** | **8x8 filters** |
-| --- | --- | --- |
-| **8 filters + 16 filters + 32 filters (8,16,32)** | 100% | 99% |
-| **16 filters + 32 filters + 64 filters (16,32,64)** | 100% | 99% |
+|     | **5x5 filters** | **7x7 filters** | **9x9 filters** |
+| --- | --- | --- | --- |
+| **8 filters + 16 filters + 32 filters (8,16,32)** | 54.7% | 61.7% | 44.0% | 
+| **16 filters + 32 filters + 64 filters (16,32,64)** | 50.6% | 50.2% | 50.6% | 
 
-Note the recall values are very close to 100% due to rounding. It is conceivable to raise the value of Precision for the good class by moving the threshold without sacrificing too many “good” images.
+
 
 **2-class defect detection summary**
 
