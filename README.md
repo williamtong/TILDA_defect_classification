@@ -121,6 +121,10 @@ The following shows the ROC for the model B-1:
 
 Precision
 
+In a typical use case, there are two metrics that are important.
+    1.  Precision for the “good” class, because we don’t want the “defected” textile to be mixed in with the “good” and shipped to the customers.
+    2.  Recall for the "defect" class, because we want to know how many actual defects were flagged by the model.
+
 In a typical use case, the precision for the “good” class is the most important criterion, because we don’t want the “defected” textile to be mixed in with the “good” and shipped to the customers. The following is the precision confusion matrix for the model at 50% threshold with 8x8 (16,32, 64) filters. The threshold is set to 0.5. As one can see, the good predictions are 95% correct and the defect predictions are 92% correct.
 
 Precision for the “good” class at 50% threshold.
