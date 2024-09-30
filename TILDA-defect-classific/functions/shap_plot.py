@@ -47,7 +47,7 @@ def plot_4class_shap_figures(shap_values,
     # print(rawfilename)
     if filename is not None:
         rawfilename = filename.replace(".png", "_raw.png")
-        plt.savefig(rawfilename)
+        plt.savefig(rawfilename, bbox_inches='tight')
     plt.show()
     
     # Select specific shap image
@@ -85,7 +85,8 @@ def plot_4class_shap_figures(shap_values,
         ax[l,0].set_yticklabels([], fontsize = 0)
         ax[l,0].xaxis.set_ticks_position('none') 
     if filename is not None:
-        plt.savefig(filename)
+        print(f'filename = {filename}')
+        plt.savefig(filename, bbox_inches='tight')
     plt.show()
 
 def plot_2class_shap_figures(shap_values, 
@@ -120,7 +121,7 @@ def plot_2class_shap_figures(shap_values,
     plt.yticks([], fontsize = 0)
     if filename is not None:
         rawfilename = filename.replace(".png", "_raw.png")
-        plt.savefig(rawfilename)
+        plt.savefig(rawfilename, bbox_inches='tight')
     plt.show()
     
     pos_shap_image = v_pospass_filter(shap_values_image)
@@ -144,5 +145,5 @@ def plot_2class_shap_figures(shap_values,
     ax[1].text(0, 3, f"predicted probabilty = {y_prob[1]}%", size= size, color = 'brown', weight='bold')
     
     if filename is not None:
-        plt.savefig(filename)
+        plt.savefig(filename, bbox_inches='tight')
     plt.show()
