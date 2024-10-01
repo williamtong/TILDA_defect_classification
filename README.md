@@ -113,12 +113,12 @@ The following shows the ROC for the model B-1:
 
 Precision
 In a typical use case, there are two metrics that are important.
-    1.  Precision for the “good” class, because we don’t want the “defected” textile to be mixed in with the “good” and shipped to the customers.
-    2.  Recall for the "defect" class, because we want to know how many actual defects were flagged by the model (we want as high as possible).
+    1.  Precision for the _good_ class, because we don’t want the _Defected_ textile to be mixed in with the “good” and shipped to the customers.
+    2.  Recall for the _Defect_ class, because we want to know how many actual defects were flagged by the model (we want as high as possible).
 
 The following is the precision confusion matrix for the model at 50% threshold with 8x8 (16,32, 64) filters. The threshold is set to 0.5. As one can see, the good predictions are 95% correct and the defect predictions are 92% correct.
 
-Precision for the “good” class at 50% threshold.
+Precision for the _Good_ class at 50% threshold.
 
 |     | **3x3 filters** | **5x5 filters** | **7x7 filters** | **9x9 filters** |
 | --- | --- | --- | --- | --- |
@@ -127,7 +127,7 @@ Precision for the “good” class at 50% threshold.
 
 <sup>*</sup> These values appear the same only by co-incidence.   They are different after the 3<sup>rd</sup> significant figure.
 
-Recall for the "defect" class at 50% threshold.
+Recall for the _Defect_ class at 50% threshold.
 
 |     | **3x3 filters** | **5x5 filters** | **7x7 filters** | **9x9 filters** |
 | --- | --- | --- | --- | --- |
@@ -201,17 +201,17 @@ In a CNN model, the basic feature is the pixel. We employ the [shap](https://sha
 
 DEFECT DETECTION (2-CLASS)
 
-**<span style="color:red">TRUE POSITIVE (Actual = “defect”, Predicted = “defect”)**</span>.
+**<span style="color:red">TRUE POSITIVE (Actual = _Defect_, Predicted = _Defect_)**</span>.
 
-    The image below shows the negative (blue) and positive (red) shapley values for each pixel of the image. The image was correctly classified by the model as “defect” (100% probability). One can see that the anomalous object on the lower right is drawing the positive attention (i.e. "there is a defect") of the model.  There is no feature that generated negative (i.e. "not defect") for the model. 
+    The image below shows the negative (blue) and positive (red) shapley values for each pixel of the image. The image was correctly classified by the model as _Defect_ (100% probability). One can see that the anomalous object on the lower right is drawing the positive attention (i.e. "there is a defect") of the model.  There is no feature that generated negative (i.e. "not defect") for the model. 
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/True_positives/GS_2cl_reload_shapval_3_8_img2494.png' width="600" style="border: 5px solid red;"><p>
 
     Another defect example is following, in which the model correctly located the anomalous feature on the image. There are scattered blue pixels in the image as well, but not nearly as numerous as red pixels to swing the prediction to negative.
  <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/True_positives/GS_2cl_reload_shapval_3_8_img2546.png ' width="600" style="border: 5px solid red;"><p>
 
-**<span style="color:orange">TRUE NEGATIVE (Actual = “good”, predicted = “good”)**</span>.
+**<span style="color:orange">TRUE NEGATIVE (Actual = _Good_, predicted = _Good_)**</span>.
 
-For the correctly predicted "good" images, they typically fall into two types.
+For the correctly predicted _Good_ images, they typically fall into two types.
     
 1. The images are very clean, and the model did not find any features of interest.  The following is an example.
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/True_negatives/GS_2cl_reload_shapval_3_8_img2495.png' width="600" style="border: 5px solid orange;"><p>
@@ -219,7 +219,7 @@ For the correctly predicted "good" images, they typically fall into two types.
 2.  The images are very noisy or "dirty."  It has all kinds of features but of the types that indicate a defect and ones that indicate a clean sample.  They features are about equal in numbers, so they cancel each other.  Here is an example.
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/True_negatives/GS_2cl_reload_shapval_3_8_img0846.png' width="600" style="border: 5px solid orange;"><p>
 
-**<span style="color:blue">FALSE POSITIVE (Actual = “Good”, Predicted = “Defect”)**</span>.
+**<span style="color:blue">FALSE POSITIVE (Actual = _Good_, Predicted = _Defect_)**</span>.
 Like the True negatives, the images fell into two types.
     
 1.  The images are very noisy or "dirty."  However, in this case, the model mistook the noise for actual defects and misclassified them as such.  The following is an example.
@@ -228,7 +228,7 @@ Like the True negatives, the images fell into two types.
 2.  The images are overall very clean but with very light features that are mistaken for a defects.  Below is an example. 
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/False_positives/GS_2cl_reload_shapval_3_8_img0141.png' width="600" style="border: 5px solid blue;"><p>
 
-**<span style="color:green">FALSE NEGATIVE (Actual = “defect”, Predicted = “good”)**</span>.
+**<span style="color:green">FALSE NEGATIVE (Actual = _Defect_, Predicted = _Good_)**</span>.
 This is probably the most important error for a business, because it is actually missing a sample that is defected.   There are two general types:
 1.  The defect feature is so faint it was difficult to catch.  Here is an example.
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/False_negatives/GS_2cl_reload_shapval_3_8_img1106.png' width="600"  style="border: 5px solid green;"><p>
@@ -244,7 +244,7 @@ When viewing the 4-class shapley plots, it is especially important to pay attent
 <span style="color:red">**1. OBJECTS.**</span>
     
 _CORRECT PREDICTIONS_
-    Here are two examples in which there are strong red in classes other than the correct “object” classes, but those were overwhelmed by the strong negative values. Thus this makes the object class as the most likely prediction.  Note in both cases there is also a lot of signal for the class _thread errors_, indicating the model having a hard distinguishing them (see Recall confusion matrix above).
+    Here are two examples in which there are strong red in classes other than the correct _object_ classes, but those were overwhelmed by the strong negative values. Thus this makes the object class as the most likely prediction.  Note in both cases there is also a lot of signal for the class _thread errors_, indicating the model having a hard distinguishing them (see Recall confusion matrix above).
     <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/objects/correct/GS_4cl_reload_shapval_7_16_img0038.png' width="400"  style="border: 5px solid red;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/objects/correct/GS_4cl_reload_shapval_7_16_img0175.png' width="400" style="border: 5px solid red;"><p>
 
 
@@ -253,13 +253,13 @@ _INCORRECT PREDICTIONS_
 
 <span style="color:orange">**2. HOLE.**</span>
 
-Hole is a challenging category for the model.  One reason is the lack of samples.  There are onl 337 samples of _hole_ defects compared to 620 for the next numerous category of _thread error_.  Another possibility is mislabeling.  I will demostrate below.
+Hole is a challenging category for the model.  One reason is the lack of samples.  There are only 337 samples of _hole_ defects compared to 620 for the next numerous category of _thread error_.  Another possibility is mislabeling.  I will demostrate below.
 
 _CORRECT PREDICTIONS_:
-    These images are classified as hole mostly based only the positive shapley values of the “hole” category.  <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/hole/correct/GS_4cl_reload_shapval_7_16_img0089.png' width="400" style="border: 5px solid orange;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/hole/correct/GS_4cl_reload_shapval_7_16_img0020.png' width="400" style="border: 5px solid orange;"><p>
+    These images are classified as hole mostly based only the positive shapley values of the _hole_ category.  <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/hole/correct/GS_4cl_reload_shapval_7_16_img0089.png' width="400" style="border: 5px solid orange;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/hole/correct/GS_4cl_reload_shapval_7_16_img0020.png' width="400" style="border: 5px solid orange;"><p>
 
 _INORRECT PREDICTIONS_:
-    The following two images both do not appear like "holes."  This left image received a "thread error" prediction, which appears to be correct.  The right image received an "object" prediction from the model.  I am not able to see any defects on the sample, so perhaps it should have been labeled as a _good_ sample. <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/hole/incorrect/GS_4cl_reload_shapval_7_16_img0016.png' width="400" style="border: 5px solid orange;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/hole/incorrect/GS_4cl_reload_shapval_7_16_img0022.png' width="400" style="border: 5px solid orange;"><p>
+    The following two images both do not appear like _holes_.  This left image received a _thread error_ prediction, which appears to be correct.  The right image received an "object" prediction from the model.  I am not able to see any defects on the sample, so perhaps it should have been labeled as a _good_ sample. <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/hole/incorrect/GS_4cl_reload_shapval_7_16_img0016.png' width="400" style="border: 5px solid orange;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/hole/incorrect/GS_4cl_reload_shapval_7_16_img0022.png' width="400" style="border: 5px solid orange;"><p>
 
 <span style="color:blue">**3. OIL SPOT.**</span>
     
