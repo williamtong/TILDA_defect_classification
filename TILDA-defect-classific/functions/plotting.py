@@ -1,3 +1,5 @@
+import pandas as pd
+import seaborn as sns
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, multilabel_confusion_matrix, roc_curve, auc, RocCurveDisplay
@@ -6,6 +8,7 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, multilabel
 def plot_ROC(y_actual, y_pred, filename = None, estimator_name='2-class CNN model'):
     fpr, tpr, thresholds = roc_curve(y_actual,y_pred)
     roc_auc = auc(fpr, tpr)
+    print(roc_auc)
     display = RocCurveDisplay(fpr=fpr, tpr=tpr, roc_auc=roc_auc, 
                                       estimator_name=estimator_name)
     display.plot()
@@ -80,8 +83,9 @@ def plot_CNN_filters(image_learner, caption, layer_num, path = "../notebook_CNN/
                     ax[row, col].text(0, 1, caption, size= size, color = 'yellow', weight='bold')
             # print()
     if filename is not None:
-        plt.savefig(path + filename, dpi = dpi)
+        image = plt.savefig(path + filename, bbox_inches='tight',dpi = dpi)
     plt.show()
+
 
 def plot_confusion_matrix(y_actual, y_pred, normalize = 'pred'):
 
