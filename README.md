@@ -3,7 +3,7 @@
 **Top line results:**
 
 1.  I trained two CNN models, one to detect defects, another to identify what class the defect is.
-2.  The best 2-class defect detection model (D-1, with 7x7 kernels and 8 x 2<sup>n</sup> kernels per block) has an ROC-AUC of **91.7%**, a Recall for the _good_ class of 96.1%, and a Recall of 61.7% for the _defect_ class at thresholds of 50%.   The model D-4 has a higher ROC-AUC of 93.1% and may potentially have a better combination of the Precision and Recall values _at different threshold values_.   However, that depends on the business case.  For our purpose, we will employ a 50% threshold.
+2.  The best 2-class defect detection model (A-1, with 3x3 kernels and 8 x 2<sup>n</sup> kernels per block) has an ROC-AUC of **93.1%**, a Recall for the _good_ class of 95.8%, and a Recall of 58.4% for the _defect_ class at thresholds of 50%.   The model C-1 has a higher _Defect_ Recall of 61.7% but both its ROC-AUC and _Good_ Precision are lower at 91.8% and 95.0%, resprecitive.  Thus this model may be desirable for certain business use cases, but for our purpose, we will employ the classic metric of best ROC-AUC.  The model A-1 will be the best model for our analysis.
 3.  The best 4-class defect identification model (c-2, with 7x7 kernels and 16 x 2<sup>n</sup> kernels per block) has an accuracy of **63.0%**, against a baseline of 25% (4 classes).  For this  4-class defect identification model, we achieve recall of 41.2%, 65.4%, 55.5%, 79.0% for the defect classes of hole, objects, oil spot, thread error, respectively.  Note there are 4 total classes so the baseline for a model that does "random guessing" is _25%_.  Thus the model is able extract signal.   In particular, this model performs very well for objects and thread error, but 
 4.  It appears that diiferent kernel sizes are targeted toward different defects, with the the smallest 3x3 kernels being better for the _hole_ and larger 8x8 being better for the _objects_.  A logical next step would be to build a model that employs at least these two dimensions of filters.
 
@@ -72,8 +72,9 @@ The images are 64x64 pixels. We employ a segmented approach. First we use a 2-cl
 3. They are successively doubled to 8x2<sup>n</sup> or 16x2<sup>n</sup> in the following blocks.
 4. After batch normalization, a 0.1 dropout layer is applied.
 5. Each block ends with a 2x2 maxpooling layer.
-
-The final output block is quite generic. The size of the fully connected layer is ¼ of the number of conv. filters in the last conv. block. The softmax layer becomes a signmoid layer when the number of classes = 2.
+6. The final output block is quite generic. The size of the fully connected layer is ¼ of the number of conv. filters in the last conv. block. The softmax layer becomes a signmoid layer when the number of classes = 2.
+7. A evaluation data set (~10%) was used as the evaluation data set to monitor the progress of the model for _early stopping_.  
+8. We employed the [Adams optimizer](https://www.geeksforgeeks.org/adam-optimizer), which adapts the learning rates for each feature by incorporating both momentum and the first and second moments of the gradient. 
 
 <p><img src='./TILDA-defect-classific/images/model_results/CNN_diagram.png' width="1000"><p>
 
@@ -90,6 +91,8 @@ The solution is we upsample/downsample each class to a reasonable number. In the
 
 **Maximizing Contrast**: This is one sub-example of data augmentation and may shed light into why data augmentation does not work in this use case. I performed a quick experiment in which I rescaled the pixel intensity to 0 ≤ i ≤ 1 instead of just dividing by 255, the performance became worse. I believe that is because the absolute intensity contains information about an object or feature’s height or depth which would be distorted or lost when the scales are changed. By the same token you would not apply image rotation to an auto-driving use case, since cars are never upside down, or image reflection to facial recognition since there is a difference between one’s regular and reflected image (e.g. hair partition).
 
+**_RESULTS_**
+
 I trained six model with the following parameters. They will be referred to as follows.
 |     | **3x3 filters** | **5x5 filters** | **7x7 filters** | **9x9 filters** |
 | --- | --- | --- | --- | --- |
@@ -97,7 +100,6 @@ I trained six model with the following parameters. They will be referred to as f
 | **16 filters + 32 filters + 64 filters (16,32,64)** | A-2 | B-2 | C-2 | D-2 |
 
 
-**_RESULTS_**
 
 **Defect DETECTION (Screen for defects, regardless of defect class)**
 
@@ -112,6 +114,8 @@ Receiver Operational Characteristics (ROC-AUC)
 The following shows the ROC for the model C-1:
 
 <p><img src='./TILDA-defect-classific/images/model_results/roc_auc_B1.png' width="600"><p>
+
+<u>Precision vs. Recall</u>
 
 In a typical use case, there are two metrics that are important.
     
@@ -259,7 +263,7 @@ _CORRECT PREDICTIONS_
     <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/objects/correct/GS_4cl_reload_shapval_7_16_img0038.png' width="400"  style="border: 5px solid red;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/objects/correct/GS_4cl_reload_shapval_7_16_img0175.png' width="400" style="border: 5px solid red;"><p>
 
 
-_INCORRECT PREDICTIONS_
+_INCORRECT PREDICTIONS_(Correct prediction = _Objects_):
      <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/objects/incorrect/GS_4cl_reload_shapval_7_16_img0206.png' width="400" style="border: 5px solid red;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/objects/incorrect/GS_4cl_reload_shapval_7_16_img0162.png' width="400" style="border: 5px solid red;"><p>
 
 <span style="color:orange">**2. HOLE.**</span>
@@ -269,7 +273,7 @@ Hole is a challenging category for the model.  One reason is the lack of samples
 _CORRECT PREDICTIONS_:
     These images are classified as hole mostly based only the positive shapley values of the _hole_ category.  <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/hole/correct/GS_4cl_reload_shapval_7_16_img0089.png' width="400" style="border: 5px solid orange;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/hole/correct/GS_4cl_reload_shapval_7_16_img0020.png' width="400" style="border: 5px solid orange;"><p>
 
-_INORRECT PREDICTIONS_:
+_INCORRECT PREDICTIONS_ (Correct prediction = _Hole_):
     The following two images both do not appear like _holes_.  This left image received a _thread error_ prediction, which appears to be correct.  The right image received an "object" prediction from the model.  I am not able to see any defects on the sample, so perhaps it should have been labeled as a _good_ sample. <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/hole/incorrect/GS_4cl_reload_shapval_7_16_img0016.png' width="400" style="border: 5px solid orange;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/hole/incorrect/GS_4cl_reload_shapval_7_16_img0022.png' width="400" style="border: 5px solid orange;"><p>
 
 <span style="color:blue">**3. OIL SPOT.**</span>
@@ -277,16 +281,18 @@ _INORRECT PREDICTIONS_:
 _CORRECT PREDICTIONS_:
     Here is an image the can appear as an _oil spot_ or a _thread error_ to the human eye. However, the model correctly surmised there is more evidence for _oil spot_ and more counter-evidence against _thread error,_ and predicted _oil spot._ <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/oil_spot/correct/GS_4cl_reload_shapval_4_16_img170.png' width="400" style="border: 5px solid blue;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/oil_spot/correct/GS_4cl_reload_shapval_7_16_img0045.png' width="400" style="border: 5px solid blue;"><p>
 
-_INORRECT PREDICTIONS_:
-    The _oil spot_ iamges that foiled the models tend to look have large blotches that look like objects.  <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/oil_spot/incorrect/GS_4cl_reload_shapval_7_16_img0225.png' width="400" style="border: 5px solid blue;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/oil_spot/incorrect/GS_4cl_reload_shapval_7_16_img0189.png' width="400" style="border: 5px solid blue;"><p>
+_INCORRECT PREDICTIONS_ (Correct prediction = _Oil Spot_):
+    The _oil spot_ iamges that foiled the models tend to look have large blotches that look like objects.  This may be a case in which the model can be improved, perhaps by weighting this type of samples more in the training data set.  <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/oil_spot/incorrect/GS_4cl_reload_shapval_7_16_img0225.png' width="400" style="border: 5px solid blue;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/oil_spot/incorrect/GS_4cl_reload_shapval_7_16_img0189.png' width="400" style="border: 5px solid blue;"><p>
 
 <span style="color:green">**4. THREAD ERROR**</span>.
     
 _CORRECT PREDICTIONS_:
-    The thread error defects tend to be bright objects that are long in shape. <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/thread_error/correct/GS_4cl_reload_shapval_7_16_img0004.png' width="400" style="border: 5px solid green;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/thread_error/correct/GS_4cl_reload_shapval_7_16_img0210.png' width="400" style="border: 5px solid green;"><p>
+    
+The thread error defects tend to be bright objects that are long in shape. <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/thread_error/correct/GS_4cl_reload_shapval_7_16_img0004.png' width="400" style="border: 5px solid green;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/thread_error/correct/GS_4cl_reload_shapval_7_16_img0210.png' width="400" style="border: 5px solid green;"><p>
 
-_INORRECT PREDICTIONS_:
-     The false thread erro predictions tend to _not_ long in shape. For example, the image on the right did not a have clearly defined bright spot, and so it was predicted as an _oil spot_.  The image on the left has a round bright or oblong bright spot, so it was predicted to be of _objects_ class.  It is entirely possible for these two images to have been mislabeled. <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/thread_error/incorrect/GS_4cl_reload_shapval_7_16_img0048.png' width="400" style="border: 5px solid green;"><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/thread_error/incorrect/GS_4cl_reload_shapval_7_16_img0043.png' width="400" style="border: 5px solid green;"><p>
+_INCORRECT PREDICTIONS_ (Correct prediction = _Thread Error_):
+
+The false thread erro predictions tend to _not_ long in shape. For example, the image on the right did not a have clearly defined bright spot, and so it was predicted as an _oil spot_.  The image on the left has a round bright or oblong bright spot, so it was predicted to be of _objects_ class.  It is entirely possible for these two images to have been mislabeled.  <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/thread_error/incorrect/GS_4cl_reload_shapval_7_16_img0048.png' width="400" style="border: 5px solid green;"><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/thread_error/incorrect/GS_4cl_reload_shapval_7_16_img0043.png' width="400" style="border: 5px solid green;"><p>
 
 
 **APPENDIX: CNN FILTERS  (_For curiosity only, not much utility in this use case_)**
@@ -299,7 +305,7 @@ Unfortunately, in this use case, the generalized features are not so obvious. Th
 
 <span style="color:red">**CNN FILTERS FOR _2-CLASS_ DEFECT DETECTION MODEL:**
 
-<span style="color:red">1<sup>st</sup> layer filters**
+<span style="color:red">**1<sup>st</sup> layer filters**
 <p><img src='./TILDA-defect-classific/images/CNN_filters/2-class/2class_layer0filters.png' width="800"  alt="your-image-description"  style="border: 5px solid RED;"><p>
 
 <span style="color:red">**2nd block filters (random sample of 128)</span>.**
