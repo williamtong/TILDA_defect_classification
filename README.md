@@ -213,27 +213,27 @@ DEFECT DETECTION (2-CLASS)
 
 For the correctly predicted "good" images, they typically fall into two types.
     
-    1. The images are very clean, and the model did not find any features of interest.  The following is an example.
+1. The images are very clean, and the model did not find any features of interest.  The following is an example.
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/True_negatives/GS_2cl_reload_shapval_3_8_img2495.png' width="600" style="border: 5px solid orange;"><p>
 
-    2.  The images are very noisy or "dirty."  It has all kinds of features but of the types that indicate a defect and ones that indicate a clean sample.  They features are about equal in numbers, so they cancel each other.  Here is an example.
+2.  The images are very noisy or "dirty."  It has all kinds of features but of the types that indicate a defect and ones that indicate a clean sample.  They features are about equal in numbers, so they cancel each other.  Here is an example.
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/True_negatives/GS_2cl_reload_shapval_3_8_img0846.png' width="600" style="border: 5px solid orange;"><p>
 
 **<span style="color:blue">FALSE POSITIVE (Actual = “Good”, Predicted = “Defect”)**</span>.
 Like the True negatives, the images fell into two types.
     
-    1.  The images are very noisy or "dirty."  However, in this case, the model mistook the noise for actual defects and misclassified them as such.  The following is an example.
+1.  The images are very noisy or "dirty."  However, in this case, the model mistook the noise for actual defects and misclassified them as such.  The following is an example.
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/False_positives/GS_2cl_reload_shapval_3_8_img1396.png' width="600" style="border: 5px solid blue;"><p>
 
-    2.  The images are overall very clean but with very light features that are mistaken for a defects.  Below is an example. 
+2.  The images are overall very clean but with very light features that are mistaken for a defects.  Below is an example. 
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/False_positives/GS_2cl_reload_shapval_3_8_img0141.png' width="600" style="border: 5px solid blue;"><p>
 
 **<span style="color:green">FALSE NEGATIVE (Actual = “defect”, Predicted = “good”)**</span>.
 This is probably the most important error for a business, because it is actually missing a sample that is defected.   There are two general types:
-    1.  The defect feature is so faint it was difficult to catch.  Here is an example.
-    <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/False_negatives/GS_2cl_reload_shapval_3_8_img1106.png' width="600"  style="border: 5px solid green;"><p>
+1.  The defect feature is so faint it was difficult to catch.  Here is an example.
+<p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/False_negatives/GS_2cl_reload_shapval_3_8_img1106.png' width="600"  style="border: 5px solid green;"><p>
 
-    2.  This is my opinion, but there are some samples that are mislabeled as defects. Below is an example. I challenge anyone to tell me this is a defect.  The data set has many of these.  The model, not surprising, only found a few pixels that would indicate there is a defect, and classified it as _good_.
+2.  It is clear that there are some samples that are mislabeled as defects. Below is an example. I challenge anyone to tell me this is a defect.  The data set has many of these.  The model, not surprising, only found a few pixels that would indicate there is a defect, and classified it as _good_.
     
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/False_negatives/GS_2cl_reload_shapval_3_8_img1916.png' width="600"  style="border: 5px solid green;"><p>
 
