@@ -99,7 +99,9 @@ I trained six model with the following parameters. They will be referred to as f
 
 **_RESULTS_**
 
-**Defect DETECTION**
+**Defect DETECTION (Screen for defects, regardless of defect class)**
+
+For classification models with 2-classes, the most common tool is [Receiver Operational Characteristics](https://en.wikipedia.org/wiki/Receiver_operating_characteristic).  The metric is the Receiver Operational Characteristics Area Under the Curve (ROC-AUC).  A model that can perfect separate two classes will have an ROC-AUC of 1, whereas a useless model that makes only random guesses will have an ROC-AUC of 0.5.
 
 Receiver Operational Characteristics (ROC-AUC)
 |     | **3x3 filters** | **5x5 filters** | **7x7 filters** | **9x9 filters** |
@@ -111,12 +113,19 @@ The following shows the ROC for the model C-1:
 
 <p><img src='./TILDA-defect-classific/images/model_results/roc_auc_B1.png' width="600"><p>
 
-Precision
 In a typical use case, there are two metrics that are important.
-    1.  Precision for the _good_ class, because we don’t want the _Defected_ textile to be mixed in with the “good” and shipped to the customers.
-    2.  Recall for the _Defect_ class, because we want to know how many actual defects were flagged by the model (we want as high as possible).
+    
+1.  Precision for the _Good_ class, because we don’t want the _Defected_ textile to be mixed in with the _Good_ and shipped to the customers.
+2.  Recall for the _Defect_ class, because we want to know how many actual defects were flagged by the model (we want as high as possible).
 
-The following is the precision confusion matrix for the model at 50% threshold with 8x8 (16,32, 64) filters. The threshold is set to 0.5. As one can see, the good predictions are 95% correct and the defect predictions are 92% correct.
+For the _Good_ class, a business is more interesting in quality control, so the proper metric for this is _Precision_, which the faction of the predicted class that was correct: if a model finds 100 good samples in the data set, what faction of them is correct, regardless of number of good samples of the original class.  For _Defects_, the focus is different.  Here is business is more interested in catching as many defects as possible.  _Recall_ is the fraction of the original class (in this case the _Defect_ class) to have been captured by the model.  
+
+It is important to note that both these models are affected by the threshold set for the output.  The model outputs a probability of it being a defect for each sample.  The threshold is the probability above which is a _Defect_and below which is a _Good_.   Typically that is set at 50%.  However, if the use case is very sensitive to defects, the threshold can be lowered to capture more _defects_ and produce a _purer_ good class.  However, this is done at the expense "wasting" samples that are marginally _Good_ but misclassified as _Defects_ by the model.
+
+
+Precision
+
+The following is the precision confusion matrix for the model at 50% threshold with 8x8 (16,32, 64) filters. The threshold is set to 0.5. As one can see, the good predictions are 95.8% correct.
 
 Precision for the _Good_ class at 50% threshold.
 
@@ -127,7 +136,6 @@ Precision for the _Good_ class at 50% threshold.
 <sup>*</sup> These values appear the same only by co-incidence.   They are different after the 3<sup>rd</sup> significant figure.
 
 Recall for the _Defect_ class at 50% threshold.
-
 |     | **3x3 filters** | **5x5 filters** | **7x7 filters** | **9x9 filters** |
 | --- | --- | --- | --- | --- |
 | **8 filters + 16 filters + 32 filters (8,16,32)** | 58.4% | 54.7% | **61.7%** | 44.0% | 
@@ -137,7 +145,7 @@ Recall for the _Defect_ class at 50% threshold.
 
 **While model A-1 has the largest ROC-AUC, which is the most-used metric to evaluation the effectiveness of a 2-class model, it is important to note that model C-1 has the best _Recall_ for the _Defect_ class of 61.7%.  However, this probably means C-1 performs better at a probability threshold of 50%. The setting of this threshold depends on the business use case, and we are not privy to this information from the data set description.  We will follow the traditional metric of ROC-AUC and call A-1 our best 2-class model.
 
-Overall, the results are satisfactory given the simplicity of the model. The ROC-AUC of 93.1%.  The Precision for the _good_ class of 96.1% is impressive, and the Recall for the _defect_ class of 61.7% is an improvement over the previous iteration of the models, even if there is room for improvement.**
+Overall, the results are satisfactory given the simplicity of the model. The ROC-AUC of 93.1%.  The Precision for the _Good_ class of 96.1% is impressive, and the Recall for the _Defect_ class of 61.7% is an improvement over the previous iteration of the models, even if there is room for improvement.**
 
 **Defect IDENTIFICATION**
 
@@ -145,7 +153,7 @@ Identification of the defects can be an important step to improving of the manuf
     1. The number of samples are small (see first table above _actual number of images for each class_). 
     2. There are 4 possibilities of defects, so the probability of getting it right is only about 25%. Note that 25% is the approximate baseline of the model: it must perform significantly above it for model to be called effective.
 
-A close inspection of the images of defects in the section earlier will reveal that many classifications are almost arbitrary to the human eye. The oil spots appear to be just some shades on the textile. The holes do not always appear to be holes. The objects and thread error classes are also similar looking. Another issue is the imbalance of the data set. There are very few examples of the “hole” cases. Thus it is not surprising the models perform the worst for the class.
+A close inspection of the images of defects in the section earlier will reveal that many classifications are almost arbitrary to the human eye. The oil spots appear to be just some shades on the textile. The holes do not always appear to be holes. The objects and thread error classes are also similar looking. Another issue is the imbalance of the data set. There are very few examples of the _hole_ cases. Thus it is not surprising the models perform the worst for the class.
 
 We will use the lower-case letters to refer to these 4-class models here to identification avoid confusion with the 2-class models for detect detection.
 
