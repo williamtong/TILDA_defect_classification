@@ -87,7 +87,7 @@ The solution is we upsample/downsample each class to a reasonable number. In the
 
 **Data augmentation**: It is a technique that involves generating additional images by modifying an original image, such as by flipping, rotating, reflecting, or changing the brightness and contrast of the image. Its use is widespread general image classification. However, in this case, I experimented with it and found the results to be markedly _worse_ than just simple upsampling. Therefore I did not employ this technique in this work.
 
-**Maximizing Contrast**: This is one sub-example of data augmentation and may shed light into why data augmentation does not work in this use case. I performed a quick experiment in which I rescaled the pixel intensity to 0 ≤ i ≤ 1 instead of just dividing by 255, the performance became worse. I believe that is because the absolute intensity contains information about an object or feature’s height or depth which would be distorted or lost when the scales are changed. By the same token you would not apply image rotation to an auto-driving use case, since cars are never upside down, or image reflection to facial recognition since there is a difference between one’s regular and reflected image (e.g. hair partition).
+**Maximizing Contrast**: This is one sub-example of **data augmentation** and may shed light into why data augmentation does not work in this use case. I performed a quick experiment in which I rescaled the pixel intensity to 0 ≤ i ≤ 1 instead of just dividing by 255, the performance became worse. I believe that is because the absolute intensity contains information about an object or feature’s height or depth which would be distorted or lost when the scales are changed. By the same token you would not apply image rotation to an auto-driving use case, since cars are never upside down, or image reflection to facial recognition since there is a difference between one’s regular and reflected image (e.g. hair partition).
 
 **_RESULTS_**
 
@@ -109,7 +109,7 @@ Receiver Operational Characteristics (ROC-AUC)
 | **8 kernels + 16 kernels + 32 kernels (8,16,32)** | **93.1%** | 91.8% | 91.8% | 88.4% |
 | **16 kernels + 32 kernels + 64 kernels (16,32,64)** | 91.5% | 92.4% | 89.2% | 89.8% |
 
-The following shows the ROC for the model C-1:
+The following shows the ROC for the model A-1:
 
 <p><img src='./TILDA-defect-classific/images/model_results/roc_auc_B1.png' width="600"><p>
 
@@ -120,14 +120,13 @@ In a typical use case, there are two metrics that are important.
 1.  Precision for the _Good_ class, because we don’t want the _Defected_ textile to be mixed in with the _Good_ and shipped to the customers.
 2.  Recall for the _Defect_ class, because we want to know how many actual defects were flagged by the model (we want as high as possible).
 
-For the _Good_ class, a business is more interesting in quality control, so the proper metric for this is _Precision_, which the faction of the predicted class that was correct: if a model finds 100 good samples in the data set, what faction of them is correct, regardless of number of good samples of the original class.  For _Defects_, the focus is different.  Here is business is more interested in catching as many defects as possible to prevent them from being shipped.  _Recall_ is the fraction of the original class (in this case the _Defect_ class) to have been captured by the model.  
+For the _Good_ class, a business is more interesting in quality control, so the proper metric for this is _Precision_, which is the faction of the predicted class that is actually correct.  That is, if a model finds 100 good samples in the data set, what faction of them is correct, regardless of number of good samples of the original class?  For _Defects_, the focus is different.  Here is business is more interested in catching as many defects as possible to prevent them from being shipped.  _Recall_ is the fraction of the original class (in this case the _Defect_ class) to have been captured by the model.  
 
-It is important to note that both these models are affected by the threshold set for the output.  The model outputs a probability of it being a defect for each sample.  The threshold is the probability above which is a _Defect_and below which is a _Good_.   Typically that is set at 50%.  However, if the use case is very sensitive to defects, the threshold can be lowered to capture more _defects_ and produce a _purer_ good class.  However, this is done at the expense "wasting" samples that are marginally _Good_ but misclassified as _Defects_ by the model.
-
+It is important to note that both these models are affected by the threshold for the output.  The model outputs a probability of it being a defect for each sample.  The threshold is the probability above which is a _Defect_ and below which is a _Good_.   Typically that is set at 50%.  On the other hand, there are use cases that are very sensitive to defects.  In such cases the threshold can be lowered to capture more _defects_ and produce a _purer_ good class, but this is done at the expense "wasting" samples that are marginally _Good_ and misclassifying them as _Defects_ by the model.
 
 Precision
 
-The following is the precision confusion matrix for the model at 50% threshold with 8x8 (16,32, 64) kernels. The threshold is set to 0.5. As one can see, the good predictions are 95.8% correct.
+The following is the precision confusion matrix for the model at 50% threshold with 8x8 (16, 32, 64) kernels. The threshold is set to 0.5. As one can see, the good predictions are 95.8% correct.
 
 Precision for the _Good_ class at 50% threshold.
 
@@ -145,9 +144,9 @@ Recall for the _Defect_ class at 50% threshold.
 
 **2-class defect detection summary**
 
-**While model A-1 has the largest ROC-AUC, which is the most-used metric to evaluation the effectiveness of a 2-class model, it is important to note that model C-1 has the best _Recall_ for the _Defect_ class of 61.7%.  However, this probably means C-1 performs better at a probability threshold of 50%. The setting of this threshold depends on the business use case, and we are not privy to this information from the data set description.  We will follow the traditional metric of ROC-AUC and call A-1 our best 2-class model.
+While model A-1 has the largest ROC-AUC, which is the most-used metric to evaluation the effectiveness of a 2-class model, it is important to note that model C-2 has the best _Precision_ for the _Good_ class at 96.1%, and C-1 has the best _Recall_ for the _Defect_ class of 61.7%.  It is likely that these two models perform very well only at the threshold of 50%.  The setting of this threshold depends on the business use case, which we are not privy to from the data set description.  In general, the model with the best ROC-AUC will have the best performance on the average, so we will follow the traditional metric of ROC-AUC and call A-1 our best 2-class model.
 
-Overall, the results are satisfactory given the simplicity of the model. The ROC-AUC of 93.1%.  The Precision for the _Good_ class of 96.1% is impressive, and the Recall for the _Defect_ class of 61.7% is an improvement over the previous iteration of the models, even if there is room for improvement.**
+**Overall, the results are satisfactory given the simplicity of the model. The ROC-AUC of 93.1%.  The Precision for the _Good_ class of 96.1% is impressive, and the Recall for the _Defect_ class of 58.4% is an improvement over the previous iteration of the models, even if there is room for improvement.**
 
 **Defect IDENTIFICATION**
 
@@ -162,12 +161,9 @@ We will use the lower-case letters to refer to these 4-class models here to iden
 |     | **3x3 kernels** | **5x5 kernels** | **7x7 kernels** | **9x9 kernels** |
 | --- | --- | --- | --- | --- |
 | **8 kernels + 16 kernels + 32 kernels (8,16,32)** | a-1 | b-1 | c-1 | d-1 |
-| **16 kernels + 32 kernels + 64 kernels (16,32,64)** | a-2 | b-2 | c-2 | d-2 | 
-|||||
+| **16 kernels + 32 kernels + 64 kernels (16,32,64)** | a-2 | b-2 | c-2 | d-2 |
 
-Below is the overall accuracy of the model. As one can see, the overall accuracies of the A1 model linger near the 50-60% levels.  While they are well above the baseline of ~25%, theprobable because of its simplicity. As for the most complex model B2, again it does not perform as well as the two models of medium complexity.
-
-We use the overall accuracy as the metric to select the best model. The results are summarized below.
+There are many ways to select the best model. They often depend on the use case.  For examples, some defects may be more costly to the company than others, so they should be emphasized more.  However, we are not privy to this information in our case, so we shall use the overall accuracy as the metric to select the best model. Below are the overall accuracies of the models. As one can see, they linger near the 50-60% levels.  While they are well above the baseline of ~25%, there is room for improvement.  
 
 Total accuracy
 
@@ -177,13 +173,12 @@ Total accuracy
 | **16 kernels + 32 kernels + 64 kernels (16,32,64)** | 58.4% | 59.7% | 63.0% | 52.3% |
 
 
-
 We find the model c-2 is _nominally_ the best one.  Overall all the models' accuracies are within the range of 50% to 65%.  As already noted, larger kernels or more kernels do not necessarily produced the same results.  In fact, the worst model is the 9x9 kernels with 16-32-64 kernels.  Large kernels may not be flexible enough to capture the intracacies of the irregularity of the defects in our images.   More kernels may end up cause the model to overfit the training data.  
 
 
 **Model c-2 (7 x 7 kernels, 16 kernels in the first layer)**
 
-The following are the relevant confusion matrix for model c-2. Recall measures how many of the actual defects were flagged by the model.  It is the best metric here because _a-priori_ we are not aware of any preference for a class, like we know the defect class is highly undesirable for the 2-class model and needs to be screened out.
+The following are the relevant confusion matrix for model c-2. Recall measures how many of the actual defects were flagged by the model.  It is the best metric here because _a-priori_ we are not aware of any preference for a class.
 
 Here one can see the model performs especially well for the "thread error" and “objects” classes and poorly for the “hole” class. These are the most and least populous class in the data set, respectively, so this is all expected.
 
