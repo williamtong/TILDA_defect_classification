@@ -67,7 +67,7 @@ It is also interesting to note that the holes appear as bright spot, which leads
 
 The images are 64x64 pixels. We employ a segmented approach. First we use a 2-class CNN model to detect the defects. Then we employ a 4-class model to identify the defects. Both models have a very similar architecture. In both models, I employed a CNN network of 3 convolutional blocks, followed by a flattening, fully connected layer, and a finally softmax output layer. The only difference between the two models are the final softmax layer.
 
-1. We experimented with four (4) convolutional filter sizes: 3x3, 5x5, 7x7, and 9x9.  (Note previous we employed kernels with _even_ number sizes.  However, I have learned since then that even kernel sizes lead a problems when you desire the output to have the same size as the input. see [link](https://medium.com/geekculture/why-is-odd-sized-kernel-preferred-over-even-sized-kernel-a767e47b1d77)
+1. We experimented with four (4) convolutional filter sizes: 3x3, 5x5, 7x7, and 9x9.  (Note previous we employed kernels with _even_ number sizes.)  However, I have learned since then that even kernel sizes lead a problems when you desire the output to have the same size as the input. see [link](https://medium.com/geekculture/why-is-odd-sized-kernel-preferred-over-even-sized-kernel-a767e47b1d77)
 2. Each convolutional block starts with with 8 or 16 conv. filters.
 3. They are successively doubled to 8x2<sup>n</sup> or 16x2<sup>n</sup> in the following blocks.
 4. After batch normalization, a 0.1 dropout layer is applied.
@@ -79,12 +79,12 @@ The final output block is quite generic. The size of the fully connected layer i
 
 ISSUES AND HOW THEY WERE ADDRESSED
 
-**Filter size**: Small filters make the model train faster and can allow for more numerous filters to be applied, whereas large filters may capture correlations between features that are farther apart. I decided to employ only two sizes of 4x4 and 8x8 because 16x16 is already the half size of the output of the penultimate conv. block (Quick experiments, not shown here, confirmed it performed worse than the 4x4 and 8x8 filters).
+**Filter size**: Small filters make the model train faster and can allow for more numerous filters to be applied, whereas large filters may capture correlations between features that are farther apart. I decided to employ only two sizes of 4x4 and 8x8 because 16x16 is already the half size of the output of the penultimate convolution block (Quick experiments, not shown here, confirmed it performed worse than the 4x4 and 8x8 filters).
 
 **Monochromity**: The as-downloaded images contain the full complement of the 3 RGB colors, all having the same values. I reduced the dimensions from 64x64x3 to 64x64x1. However, this is tricky as some libraries automatically rescale the images, which is not desirable. At the end, I wrote my own function to perform this task.
 
-**Dataset imbalance**: Each class is weighted by the inverse of its relative population during training. However, this is not sufficient. The problem is during stochastic gradient descent, the population of the minority class in each mini batch becomes so small that there is great variation from on mini batch to the next. For example, the hole class has only 337 images. The test set has 0.1 of the population (34 images). If we have 32 minibatches, we will end up with only 2 hole images for each mini batch.
-The solution is we upsample/downsample each class to a reasonable number. In the defect detection model, we downsample the ‘good’ class to ~5120 samples, and upsample each of the defect classes to ~1240 samples (summing to ~5120 samples). This way, the sample sizes are balanced, and each minibatch has a good distribution of each population.
+**Dataset imbalance**: Each class is weighted by the inverse of its relative population during training. However, this is not sufficient. The problem is during _stochastic gradient descent_, the population of the minority class in each mini batch becomes so small that there are great variations from one mini batch to the next. For example, the hole class has only 337 images. The test set has 0.1 of the population (34 images). If we have 32 minibatches, we will end up with only 2 hole images for each mini batch.
+The solution is we upsample/downsample each class to a reasonable number. In the defect detection model, we downsample the _Good_ class to ~5120 samples, and upsample each of the defect classes to ~1240 samples (summing to ~5120 samples). This way, the sample sizes are balanced, and each minibatch has a good distribution of each population.
 
 **Data augmentation**: It is a technique that involves generating additional images by modifying an original image, such as by flipping, rotating, reflecting, or changing the brightness and contrast of the image. Its use is widespread general image classification. However, in this case, I experimented with it and found the results to be markedly _worse_ than just simple upsampling. Therefore I did not employ this technique in this work.
 
@@ -104,10 +104,10 @@ I trained six model with the following parameters. They will be referred to as f
 Receiver Operational Characteristics (ROC-AUC)
 |     | **3x3 filters** | **5x5 filters** | **7x7 filters** | **9x9 filters** |
 | --- | --- | --- | --- | --- |
-| **8 filters + 16 filters + 32 filters (8,16,32)** | 93.1% | 91.8% | 91.8% | 88.4% |
+| **8 filters + 16 filters + 32 filters (8,16,32)** | **93.1%** | 91.8% | 91.8% | 88.4% |
 | **16 filters + 32 filters + 64 filters (16,32,64)** | 91.5% | 92.4% | 89.2% | 89.8% |
 
-The following shows the ROC for the model B-1:
+The following shows the ROC for the model C-1:
 
 <p><img src='./TILDA-defect-classific/images/model_results/roc_auc_B1.png' width="600"><p>
 
@@ -124,25 +124,26 @@ Precision for the _Good_ class at 50% threshold.
 | --- | --- | --- | --- | --- |
 | **8 filters + 16 filters + 32 filters (8,16,32)** | 95.8% | 95.0%<sup>*<sup> | 95.0%<sup>*<sup> | 95.0%<sup>*<sup> |
 | **16 filters + 32 filters + 64 filters (16,32,64)** | 94.5% | 95.4% | 96.1% | 94.4% |
-
 <sup>*</sup> These values appear the same only by co-incidence.   They are different after the 3<sup>rd</sup> significant figure.
 
 Recall for the _Defect_ class at 50% threshold.
 
 |     | **3x3 filters** | **5x5 filters** | **7x7 filters** | **9x9 filters** |
 | --- | --- | --- | --- | --- |
-| **8 filters + 16 filters + 32 filters (8,16,32)** | 58.4% | 54.7% | 61.7% | 44.0% | 
+| **8 filters + 16 filters + 32 filters (8,16,32)** | 58.4% | 54.7% | **61.7%** | 44.0% | 
 | **16 filters + 32 filters + 64 filters (16,32,64)** |44.9% | 50.6% | 50.2% | 50.6% | 
 
 **2-class defect detection summary**
 
-Model A-1 has the largest ROC-AUC, which is the most-used metric to evaluation the effectiveness of a 2-class model.  However, in our case, with the threshold set at 50% probability, Model B-1 has a far superior Recall for the defect class (61.7% vs. 50.6%).  It is possible that the relative performance of the two models will flip, given model A-2 has a higher ROC_AUC than B-1.  However, the threshold depends on the business use case, and we are not privy to this information from the data set description. For this work we will assume 50% is the correct threshold.
+**While model A-1 has the largest ROC-AUC, which is the most-used metric to evaluation the effectiveness of a 2-class model, it is important to note that model C-1 has the best _Recall_ for the _Defect_ class of 61.7%.  However, this probably means C-1 performs better at a probability threshold of 50%. The setting of this threshold depends on the business use case, and we are not privy to this information from the data set description.  We will follow the traditional metric of ROC-AUC and call A-1 our best 2-class model.
 
-Overall, the results are satisfactory given the simplicity of the model. The ROC-AUC of 91.8% and 92.4% are both quite impressive, especially given the large number of images that were hard to classified even for the human eye.  The Precision for the _good_ class of 96.1% is impressive, and the Recall for the _defect_ class of 61.7% is an improvement over the previous iteration of the models, even if there is room for improvement.
+Overall, the results are satisfactory given the simplicity of the model. The ROC-AUC of 93.1%.  The Precision for the _good_ class of 96.1% is impressive, and the Recall for the _defect_ class of 61.7% is an improvement over the previous iteration of the models, even if there is room for improvement.**
 
 **Defect IDENTIFICATION**
 
-Identification of the defects can be an important step to improving of the manufacturing process. From a modeling perspective, it presents a much more challenging problem. For one thing, the number of samples are small (see first table above _actual number of images for each class_). Further, there are 4 possibilities of defects, so the probability of getting it right is only about 25%. Note that 25% is the approximate baseline of the model: it must perform significantly above it for model to be called effective.
+Identification of the defects can be an important step to improving of the manufacturing process. From a modeling perspective, it presents a much more challenging problem. 
+    1. The number of samples are small (see first table above _actual number of images for each class_). 
+    2. There are 4 possibilities of defects, so the probability of getting it right is only about 25%. Note that 25% is the approximate baseline of the model: it must perform significantly above it for model to be called effective.
 
 A close inspection of the images of defects in the section earlier will reveal that many classifications are almost arbitrary to the human eye. The oil spots appear to be just some shades on the textile. The holes do not always appear to be holes. The objects and thread error classes are also similar looking. Another issue is the imbalance of the data set. There are very few examples of the “hole” cases. Thus it is not surprising the models perform the worst for the class.
 
@@ -163,14 +164,16 @@ Total accuracy
 |     | **3x3 filters** | **5x5 filters** | **7x7 filters** | **9x9 filters** |
 | --- | --- | --- | --- | --- |
 | **8 filters + 16 filters + 32 filters (8,16,32)** | 58.0% | 61.7% | 59.3% | 60.9% |
-| **16 filters + 32 filters + 64 filters (16,32,64)** | 58.4?% | 59.7% | 63.0% | 52.3% |
+| **16 filters + 32 filters + 64 filters (16,32,64)** | 58.4% | 59.7% | 63.0% | 52.3% |
 
 
-We can see the model a-2 is the best one, marginally better than b-1. The a-1 model is barely above the 25% baseline, probably because the this is now a 4-class problem with too much complexity for it. The most complex model, b-4, does not perform well probably because of overfitting.
 
-**Model b-1 (7 x 7 filters, 8 filters in the first layer)**
+We find the model c-2 is _nominally_ the best one.  Overall all the models' accuracies are within the range of 50% to 65%.  As already noted, larger kernels or more filters do not necessarily produced the same results.  In fact, the worst model is the 9x9 kernels with 16-32-64 filters.  Large kernels may not be flexible enough to capture the intracacies of the irregularity of the defects in our images.   More filters may end up cause the model to overfit the training data.  
 
-The following are the relevant confusion matrix for model B-2. Recall measures how many of the actual defects were flagged by the model.  It is the best metric here because _a-priori_ we are not aware of any preference for a class, like we know the defect class is highly undesirable for the 2-class model and needs to be screened out.
+
+**Model c-2 (7 x 7 filters, 16 filters in the first layer)**
+
+The following are the relevant confusion matrix for model c-2. Recall measures how many of the actual defects were flagged by the model.  It is the best metric here because _a-priori_ we are not aware of any preference for a class, like we know the defect class is highly undesirable for the 2-class model and needs to be screened out.
 
 Here one can see the model performs especially well for the "thread error" and “objects” classes and poorly for the “hole” class. These are the most and least populous class in the data set, respectively, so this is all expected.
 
@@ -195,7 +198,7 @@ Here one can see the model performs especially well for the "thread error" and �
 
 **_SHAPLEY value analysis_**
 
-[_Shapley Values_](https://www.investopedia.com/terms/s/shapley-value.asp#:~:text=Essentially%2C%20the%20Shapley%20value%20is,or%20less%20than%20the%20others.)  are derives from the _marginal contribution_ of each feature to a prediction, after applying all other features. In game theory, Shapley values help determine how much each player in a collaborative game has contributed to the total payout. For a machine learning model, each feature is considered a "player". The Shapley value for a feature represents the average magnitude of that feature's contribution across all possible combinations of features. Specifically, Shapley values are calculated by comparing a model's predictions with and without a particular feature present. This is done iteratively for each feature and each sample in the dataset. By assigning each feature an importance value for every prediction, SHAP values provide a local, consistent explanation of how the model behaves. They reveal which features have the most impact on a specific prediction, whether positively or negatively. This is valuable for understanding the reasoning behind complex machine learning models such as [_deep neural networks_](https://www.kdnuggets.com/2023/08/shap-values-model-interpretability-machine-learning.html)
+[_Shapley Values_](https://www.investopedia.com/terms/s/shapley-value.asp#:~:text=Essentially%2C%20the%20Shapley%20value%20is,or%20less%20than%20the%20others.) are derives from the _marginal contribution_ of each feature to a prediction, after applying all other features. In game theory, Shapley values help determine how much each player in a collaborative game has contributed to the total payout. For a machine learning model, each feature is considered a "player". The Shapley value for a feature represents the average magnitude of that feature's contribution across all possible combinations of features. Specifically, Shapley values are calculated by comparing a model's predictions with and without a particular feature present. This is done iteratively for each feature and each sample in the dataset. By assigning each feature an importance value for every prediction, SHAP values provide a local, consistent explanation of how the model behaves. They reveal which features have the most impact on a specific prediction, whether positively or negatively. This is valuable for understanding the reasoning behind complex machine learning models such as [_deep neural networks_](https://www.kdnuggets.com/2023/08/shap-values-model-interpretability-machine-learning.html)
 
 In a CNN model, the basic feature is the pixel. We employ the [shap](https://shap.readthedocs.io/en/latest/example_notebooks/overviews/An%20introduction%20to%20explainable%20AI%20with%20Shapley%20values.html) library [DeepExplainer](https://shap.readthedocs.io/en/latest/example_notebooks/image_examples/image_classification/Front%20Page%20DeepExplainer%20MNIST%20Example.html) function to visualize each pixel contribution to the prediction. Because the shap library is a little out of date, I had to write my own code display the results.
 
