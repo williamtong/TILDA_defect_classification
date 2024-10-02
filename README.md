@@ -10,7 +10,7 @@
 
 Tilda [click to see Tilda website](https://www.tildafabricusa.com) is a fabric brand founded by Norwegian designer Tone Finnanger in 1999, best known for whimsical naive characters and charming fabric design.
 
-![Tilda products](./TILDA-defect-classific/images/introduction/living_room.jpg)
+<p><img src='./TILDA-defect-classific/images/introduction/living_room.jpg' width="500"><p>
 
 The Tilda image dataset for defect detection/classification in fabric presents an image classification on an industrial context (<https://www.kaggle.com/datasets/angelolmg/tilda-400-64x64-patches>). It is based on the public dataset by the Deutsche Forschungsgemeinschaft's Texture analysis group from the University of Freiburg (<https://lmb.informatik.uni-freiburg.de/resources/datasets/tilda.en.html>) The original images were resized from 768x512 to 512x512, and then broken into 64x64 patches.
 
@@ -90,7 +90,6 @@ The images are 64x64 pixels. We employ a segmented approach. First we use a 2-cl
 The solution is we upsample/downsample each class to a reasonable number. In the defect detection model, we downsample the _Good_ class to ~5120 samples, and upsample each of the defect classes to ~1240 samples (summing to ~5120 samples). This way, the sample sizes are balanced, and each minibatch has a good distribution of each population.
 
 **Data augmentation**: It is a technique that involves generating additional images by modifying an original image, such as by flipping, rotating, reflecting, or changing the brightness and contrast of the image. Its use is widespread general image classification. However, in this case, I experimented with it and found the results to be markedly _worse_ than just simple upsampling. Therefore I did not employ this technique in this work.
-
 **Maximizing Contrast**: This is one sub-example of **data augmentation** and may shed light into why data augmentation does not work in this use case. I performed a quick experiment in which I rescaled the pixel intensity to 0 ≤ i ≤ 1 instead of just dividing by 255, the performance became worse. I believe that is because the absolute intensity contains information about an object or feature’s height or depth which would be distorted or lost when the scales are changed. 
 
 <h2>RESULTS</h2>
@@ -153,6 +152,7 @@ While model A-1 has the largest ROC-AUC, which is the most-used metric to evalua
 Identification of the defects is genrally an important step to continuous monitoring and improvement the manufacturing process. In this case here, it presents a much more challenging problem than the <i>Defect Detection</i> model. <br></br>
     1. The number of samples are small (see first table above _actual number of images for each class_). 
     2. There are 4 possibilities of defects, so the probability of getting it right is only about 25%. Note that 25% is the approximate baseline of the model: it must perform significantly above it for model to be called effective.
+
 
 A close inspection of the images of defects in the **Sample images from each class** section will reveal that many classifications are almost arbitrary to the human eye. Some <i>oil spots</i> appear to be just some shades on the textile. The <i>holes</i> do not always appear to be holes. The _objects_ and _thread error_ classes are also similar looking. Some of the labels appear to be wrong.  Another issue is the imbalance of the data set. There are very few examples of the _hole_ cases. Thus it is not surprising the models perform the worst for the class.
 
@@ -247,7 +247,6 @@ For the correctly predicted _Good_ images, they typically fall into two types.
 1. The images are very clean, and the model did not find any features of interest.  The following is an example.
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/True_negatives/GS_2cl_reload_shapval_3_8_img2495.png' width="600" style="border: 5px solid orange;"><p>
 <br>
-
 2. The images are very noisy or "dirty."  It has all kinds of features but of the types that indicate a defect and ones that indicate a clean sample.  The blue (which indicate <i>good</i>) and red (which indicate <i>defects</i>) features are about equal in numbers, so they cancel each other.  Here is an example.
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/True_negatives/GS_2cl_reload_shapval_3_8_img0846.png' width="600" style="border: 5px solid orange;"><p>
 <br>
