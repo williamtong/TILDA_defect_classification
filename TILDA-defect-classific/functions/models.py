@@ -1,13 +1,11 @@
 import random
 import os
-# import glob
 import numpy as np 
 import pandas as pd
-# import seaborn as sns
 import tensorflow as tf
-# from sklearn.model_selection import train_test_split
-from keras.layers import Conv2D, Dense, MaxPool2D, Flatten, Dropout, BatchNormalization
-from keras.models import Sequential
+from keras.utils import plot_model
+from keras.layers import Conv2D, Dense, MaxPool2D, Flatten, Dropout, BatchNormalization, concatenate, Conv2D, Input
+from keras.models import Model
 from keras.callbacks import EarlyStopping
 from keras.optimizers import Adam
 import keras 
@@ -45,7 +43,7 @@ def get_class_weight(labels):
     return class_weights
     
 
-def preprocessor(image, div_by_255 = False)):
+def preprocessor(image, div_by_255 = False):
     '''
     Function to format image to right size.  
     Optional 
@@ -82,7 +80,10 @@ def recreate_labels(features, label_dict):
     return labels_numerical
 
 
-def compile_image_model(filter_dim, dropout, num_filters = 4, patience = 20, lr =0.001, num_classes =5):
+
+def compile_image_model(dropout, kernel_dims = [5, 7, 9], nums_filters = [4,4,4], 
+                        patience = 20, lr =0.001, num_classes =4, 
+                        dot_img_file = "../images/network/image_learner_model.png"):
     '''This function instantiation a CNN model with the follow specs
     The CNN model will have three blocks.  For each subsequent block the number of filters doubles.
     The last block is fully connected layer, followed by the output layer which is a softmax function.
@@ -90,56 +91,85 @@ def compile_image_model(filter_dim, dropout, num_filters = 4, patience = 20, lr 
     The optimizer is Adam.
 
     input:
-    filter_dim (integer):      The dimension of a square convolutional filter.
-    dropout (0 ≤ float < 1):   Fraction connections that are dropped out for each block
-    num_filters (integer):     Number of filter for the starting block.  
-    patience (interger):       Number of epochs with no improvement after which training will be stopped. 
-    num_classes (integer):     Number of classes of the target variable
+    kernel_dims (list of integers):   List of the dimensions of the square convolutional kernels (filters).
+    dropout (0 ≤ float < 1):          Fraction connections that are dropped out for each block
+    nums_filters (list of integers):  List of the numbers of kernels (filters) for the starting block.  
+    patience (interger):              Number of epochs with no improvement after which training will be stopped. 
+    num_classes (integer):            Number of classes of the target variable
 
     output:
     image_learner:             Instantiated CNN model
     '''
-    call_back = EarlyStopping(patience = patience, restore_best_weights = True)
-    image_learner = Sequential()
+
+    if type(nums_filters) == int:
+        nums_filters = [nums_filters]*len(kernel_dims)
+    kernel_dims = zip(kernel_dims, nums_filters)
+
+    inputs_list = []
+    flattened_list = []
+    for dim, num_filters in kernel_dims:
+        dim_text = '_' +str(dim)
+        inputs = Input(shape = (64, 64, 1), name = f'image_input_for {dim_text}x{dim_text[1:]}_kernel_subnetwork')
+        conv_1 = Conv2D(filters = int(num_filters), 
+                        kernel_size = (dim, dim), 
+                        padding="same", strides = (1, 1), 
+                        activation = "relu", name = '2dfilter1'+dim_text)(inputs)
+        batch_norm_1 = BatchNormalization(axis = 2, name = 'batchnormalization1'+dim_text)(conv_1)
+        dropout_1 = Dropout(dropout, name = 'dropout1'+dim_text)(batch_norm_1)
+        maxpool_1 = MaxPool2D(name = 'maxpool1'+dim_text)(dropout_1)
+        
+        num_filters *= 2 #double the number of kernels for each successive block)
+        conv_2 = Conv2D(filters = int(num_filters), 
+                        kernel_size = (dim, dim), 
+                        padding="same",strides = (1, 1), 
+                        activation = "relu", name = '2dfilter2'+dim_text)(maxpool_1)
+        batch_norm_2 = BatchNormalization(axis = 2, name = 'batchnormalization2'+dim_text)(conv_2)
+        dropout_2 = Dropout(dropout, name = 'dropout2'+dim_text)(batch_norm_2)
+        maxpool_2 = MaxPool2D(name = 'maxpool2'+dim_text)(dropout_2)
+        
+        num_filters *= 2
+        conv_3 = Conv2D(filters = int(num_filters), 
+                        kernel_size = (dim, dim), 
+                        padding="same",strides = (1, 1), 
+                        activation = "relu", name = '2dfilter3'+dim_text)(maxpool_2)
+        batch_norm_3 = BatchNormalization(axis = 2, name = 'batchnormalization3'+dim_text)(conv_3)
+        dropout_3 = Dropout(dropout, name = 'dropout3'+dim_text)(batch_norm_3)
+        maxpool_3 = MaxPool2D(name = 'maxpool3'+dim_text)(dropout_3)
+
+        # Flattened layer
+        num_filters /= 4
+        flattened = Flatten(name = 'flattened5'+dim_text)(maxpool_3)
+
+        # Append inputs and outputs to list
+        inputs_list.append(inputs)
+        flattened_list.append(flattened)
+
+    merged = concatenate(flattened_list, name = 'concatenate_all_subnetworks')
+
+    dense_last = Dense(units = 100, activation = 'relu', name = 'dense_last')(merged)
+    outputs = Dense(units = num_classes, activation = "softmax", name = 'softmax_output')(dense_last)
     
-    image_learner.add(Conv2D(filters = int(num_filters), kernel_size = (filter_dim, filter_dim), 
-                             padding="same",strides = (1, 1), activation = "relu", name = '2dfilter0'))
-    print(f'image_learner.layers[0].filters: {image_learner.layers[0].filters}')
-    image_learner.add(BatchNormalization(axis = 2, name = 'batchnormalization0'))
-    image_learner.add(Dropout(dropout, name = 'dropout0'))
-    image_learner.add(MaxPool2D(name = 'maxpool0'))
-    
-    num_filters *= 2
-    image_learner.add(Conv2D(filters = int(num_filters), kernel_size = (filter_dim, filter_dim), 
-                             padding="same",strides = (1, 1), activation = "relu", name = '2dfilter1'))
-    print(f'image_learner.layers[4].filters: {image_learner.layers[4].filters}')
-    image_learner.add(BatchNormalization(axis = 2, name = 'batchnormalization1'))
-    image_learner.add(Dropout(dropout, name = 'dropout1'))
-    image_learner.add(MaxPool2D(name = 'maxpool1'))
-    
-    num_filters *= 2
-    image_learner.add(Conv2D(filters = int(num_filters), kernel_size = (filter_dim, filter_dim), 
-                             padding="same", strides = (1, 1), activation = "relu", name = '2dfilter2'))
-    print(f'image_learner.layers[8].filters: {image_learner.layers[8].filters}')
-    image_learner.add(BatchNormalization(axis = 2, name = 'batchnormalization2'))
-    image_learner.add(Dropout(dropout, name = 'dropout2'))
-    image_learner.add(MaxPool2D(name = 'maxpool2'))
-    
-    num_filters /= 4
-    image_learner.add(Flatten(name = 'flatten'))
-    image_learner.add(Dense(units = int(num_filters), activation = "relu", name = 'fully_connected'))
-    image_learner.add(Dense(units = num_classes, activation = "softmax", name = 'output'))
-    
+    image_learner = Model(inputs = inputs_list, outputs = outputs, name = 'image_learner')
     image_learner.compile(loss = "sparse_categorical_crossentropy", metrics = ["accuracy"], 
                           optimizer = tf.keras.optimizers.Adam(learning_rate= lr))
+    dot_img_file = dot_img_file
+    print(image_learner.summary())
+    plot_model(image_learner,
+               show_layer_activations=True,
+               to_file=dot_img_file,
+               show_shapes=True,
+               show_dtype=True,
+               show_layer_names=True)
     return image_learner
+
 
 class CNN_model: 
     ''' This function instantiate an RFM (sklearn) or gbm (xgboost) model and paraments,
-    trains a model, and and outputs the training scores.
+    trains a model, and outputs the training scores.
     '''
 
-    def __init__(self, filter_dim =8 , dropout = 0.1, num_filters = 4, lr = 0.001, patience = 5, num_classes = 4):
+    def __init__(self, kernel_dims = [5,7,9], dropout = 0.1, nums_filters = 4, 
+                 lr = 0.001, patience = 5, num_classes = 4):
         '''
         input:
         filter_dim (integer):      The dimension of a square convolutional filter.
@@ -148,18 +178,25 @@ class CNN_model:
         patience (interger):       Number of epochs to elapse  Number of epochs with no improvement after which training will be stopped. 
         num_classes (integer):     Number of classes of the target variable
         '''
-        self.filter_dim = filter_dim,  
+        # self.filter_dim = filter_dim,
+        self.kernel_dims = kernel_dims
         self.dropout = dropout
         self.lr = lr
         self.call_back = EarlyStopping(monitor="val_accuracy", 
                               verbose=1, 
                               patience = patience, 
                               restore_best_weights = True,
-                              start_from_epoch= 150)
+                              start_from_epoch= 5)
         self.num_classes = num_classes
-        self.image_learner = compile_image_model(filter_dim, dropout, num_filters = num_filters, lr = self.lr, num_classes =num_classes)
+        print(f'self.kernel_dims = {self.kernel_dims}')
+        print(f'self.dropout = {self.dropout}')
+        self.image_learner = compile_image_model(kernel_dims = self.kernel_dims, 
+                                                          dropout = self.dropout, 
+                                                          nums_filters = nums_filters, 
+                                                          lr = self.lr, 
+                                                          num_classes = num_classes)
 
-    def fit(self, features_train, labels_train, features_eval, labels_eval, label_dict, batch_size=128, class_weights=None, epochs = 100000, verbose=2):
+    def fit(self, features_train, labels_train, features_eval, labels_eval, label_dict, batch_size=128, class_weight=None, epochs = 100000, verbose=2):
         '''
         This uses the image_learner model to fit the data set. It uses the the eval data set to montior overfitting,
         and stops the fitting after "patience" number of epochs with no improvement. 
@@ -172,7 +209,7 @@ class CNN_model:
         labels_eval (numpy array):     P x 1 array of target variables for the evalution set of the images. 
         label_dict (dict):             label dictionary to tell the labels are.  For example, {0: "good", 1: "defect"}
         batch_size (integer):          minibatch size for stochastic gradient descent
-        class_weights (dict):          See explanation for get_class_weight function.
+        class_weight (dict):          See explanation for get_class_weight function.
         epochs (integer):              Max number of epoch if not early stopped.
         verbose (0, 1, 2):             Verbosity mode, 0 or 1. Mode 0 is silent, and mode 1 displays messages when the callback takes an action.
 
@@ -181,17 +218,17 @@ class CNN_model:
         image_learner:  trained model
         '''
         self.label_dict = label_dict
-        self.history = self.image_learner.fit(features_train, labels_train,
-                                              validation_data = [features_eval, labels_eval], 
+        self.history = self.image_learner.fit([features_train]*len(self.kernel_dims), labels_train,
+                                              validation_data = [[features_eval]*len(self.kernel_dims), labels_eval], 
                                               callbacks = [self.call_back], 
                                               epochs = epochs,  batch_size = batch_size,
-                                              class_weight=class_weights,
+                                              class_weight=class_weight,
                                               verbose=verbose
                                              )
         
-        print(self.image_learner.summary())r.    
+        print(self.image_learner.summary())   
         print("Finished fitting.  Predicting X...")
-        y_predict = self.image_learner.predict(features_eval)
+        y_predict = self.image_learner.predict([features_eval]*len(self.kernel_dims))
         y_predict = [self.label_dict[y.argmax()] for y in y_predict]
         print("Finished predicting X with eval data set.")
         y_actual = [self.label_dict[label] for label in labels_eval]
@@ -221,7 +258,7 @@ class CNN_model:
         y_predict_prob:  The predicted probabilities.
         '''
 
-        y_predict_prob = self.image_learner.predict(features_test)
+        y_predict_prob = self.image_learner.predict([features_test]*len(self.kernel_dims))
         y_predict = [self.label_dict[y.argmax()] for y in y_predict_prob]
         
         print("Finished predicting X.")
@@ -236,5 +273,5 @@ class CNN_model:
             plot_confusion_matrix(y_actual, y_predict, normalize = 'true')
             if self.num_classes == 2:
                 plot_ROC(labels_test, y_predict_prob[:,1])
-                plot_2class_histograms(labels_test, y_predict_prob, self.label_dict, stepsize = 0.01, density = True, semilog = False, holdout = True)   
+                plot_2class_histograms(labels_test, y_predict_prob, self.label_dict, stepsize = 0.001, density = True, semilog = False, holdout = True)   
         return y_predict, y_predict_prob

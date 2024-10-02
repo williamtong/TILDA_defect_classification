@@ -94,7 +94,7 @@ def create_data_set(all_files, all_labels, label_dict, revlabel_dict,
     features_test, features_eval, labels_test, labels_eval = \
                                 train_test_split(features_eval, labels_eval, 
                                                  stratify=labels_eval, test_size = 0.5, 
-                                                 random_state = random_state + 92)
+                                                 random_state = random_state + 92) #a 
     
     print(len(features_train), len(features_eval), len(features_test))
 
@@ -156,7 +156,7 @@ def create_data_set(all_files, all_labels, label_dict, revlabel_dict,
 
 
 def randomize(features, labels, random_seed = 98):
-    '''This function randomizes the feature and labels togethe.
+    '''This function randomizes the feature and labels together.
     Inputs:
     features (list):   List of features.
     '''
