@@ -1,12 +1,12 @@
-**Defect detection and classification on industrial fabric**
+<h1>Defect detection and classification on industrial fabrics</h1>
 
-**Top line results:**
+<h3>Top line results</h3>
 
 1.  I trained two CNN models, one to detect defects, another to identify what class the defect is.
 2.  The best 2-class defect detection model (A-1, with 3x3 kernels and 8 x 2<sup>n</sup> kernels per block) has an ROC-AUC of **93.1%**, a Recall for the _good_ class of 95.8%, and a Recall of 58.4% for the _defect_ class at thresholds of 50%.   The model C-1 has a higher _Defect_ Recall of 61.7% but both its ROC-AUC and _Good_ Precision are lower at 91.8% and 95.0%, resprecitive.  Thus this model may be desirable for certain business use cases, but for our purpose, we will employ the classic metric of best ROC-AUC.  The model A-1 will be the best model for our analysis.
 3.  The best 4-class defect identification model (c-2, with 7x7 kernels and 16 x 2<sup>n</sup> kernels per block) has an accuracy of **63.0%**, against a baseline of 25% (4 classes).  For this  4-class defect identification model, we achieve recall of 41.2%, 65.4%, 55.5%, 79.0% for the defect classes of _hole, objects, oil spot, thread error_, respectively.  Note there are 4 total classes so the baseline for a model that does "random guessing" is _25%_.  Thus the model is able extract signal.   In particular, this model performs very well for _objects_ and _thread error_, but not so well for holes.  This is largely because the dearth of _hole_ samples (only 337) vs. >600 for all other _Defect_ samples.
 
-INTRODUCTION
+<h2>INTRODUCTION</h2>
 
 Tilda [click to see Tilda website](https://www.tildafabricusa.com) is a fabric brand founded by Norwegian designer Tone Finnanger in 1999, best known for whimsical naive characters and charming fabric design.
 
@@ -14,13 +14,14 @@ Tilda [click to see Tilda website](https://www.tildafabricusa.com) is a fabric b
 
 The Tilda image dataset for defect detection/classification in fabric presents an image classification on an industrial context (<https://www.kaggle.com/datasets/angelolmg/tilda-400-64x64-patches>). It is based on the public dataset by the Deutsche Forschungsgemeinschaft's Texture analysis group from the University of Freiburg (<https://lmb.informatik.uni-freiburg.de/resources/datasets/tilda.en.html>) The original images were resized from 768x512 to 512x512, and then broken into 64x64 patches.
 
-GOALS
+<h3>GOALS</h3>
+
 1. Build a model that will detect defects images that contain defects. (2-class)
 2. Build a model that will identify the defects in each image. (4-class)
 
-I do not know in details the exact business use cases are.  However, at a high level, the 2-class model will be for catching any defective products to prevent them from being shipped.  The 4-class model will be for identifying what part of the production or supply chain is causing the defects in the merchandise.
+While the details of the exact business use cases are not known, one can infer that the 2-class model will be used for catching any defective products to prevent them from being shipped, and the 4-class modelfor identifying what part of the production or supply chain is causing the defects in the merchandise.
 
-OVERVIEW OF DATA
+<h3>OVERVIEW OF DATA</h3>
 1. The data is massively imbalanced, with 90.5% if the images being in the “good” class.
 <p><img src='./TILDA-defect-classific/images/introduction/pop_dist_all_samples.png' width="800"><p>
 <p><img src='./TILDA-defect-classific/images/introduction/pop_dist_defects.png' width="800"><p>
@@ -36,7 +37,7 @@ Below are the actual number of images for each class
 
 Note that even for the defects, there is a strong imbalance. The number of _hole_ samples is less than half of the Objects. This helps explain why the hole results are inferior to the others.
 
-SAMPLES OF IMAGES FROM EACH CLASS:
+<h3>SAMPLES OF IMAGES FROM EACH CLASS:</h3>
 Good
 <p><img src='./TILDA-defect-classific/images/introduction/good.png' width="1000"><p>
 
@@ -61,7 +62,7 @@ From the above random samples, one can see the original classification may have 
 
 It is also interesting to note that the holes appear as bright spot, which leads me to believe that the contrast for all the samples have been reversed, or there is an illumination source from below the sample. However, that does not affect the modeling.
 
-**MODEL OVERVIEW**
+<h2>MODEL OVERVIEW</h2>
 
 The images are 64x64 pixels. We employ a segmented approach. First we use a 2-class CNN model to detect the defects. Then we employ a 4-class model to identify the defects. Both models have a very similar architecture. In both models, I employed a CNN network of 3 convolutional blocks, followed by a flattening, fully connected layer, and a finally softmax output layer. The only difference between the two models are the final softmax layer.
 
@@ -74,11 +75,15 @@ The images are 64x64 pixels. We employ a segmented approach. First we use a 2-cl
 7. A evaluation data set (~10%) was used as the evaluation data set to monitor the progress of the model for _early stopping_.  
 8. We employed the [Adams optimizer](https://www.geeksforgeeks.org/adam-optimizer), which adapts the learning rates for each feature by incorporating both momentum and the first and second moments of the gradient. 
 
-<p><img src='./TILDA-defect-classific/images/model_results/CNN_diagram.png' width="1000"><p>
+<p><p>
+<figure>
+    <img src='./TILDA-defect-classific/images/model_results/CNN_diagram.png' width="1000">
+    <figcaption>Schematic diagram for both the 2-class and 4-class models used in this work</figcaption>
+</figure>
 
-ISSUES AND HOW THEY WERE ADDRESSED
+<h3>ISSUES AND HOW THEY WERE ADDRESSED</h3>
 
-**kernel size**: Small kernels make the model train faster and can allow for more numerous kernels to be applied, whereas large kernels may capture correlations between features that are farther apart. I decided to employ only two sizes of 4x4 and 8x8 because 16x16 is already the half size of the output of the penultimate convolution block (Quick experiments, not shown here, confirmed it performed worse than the 4x4 and 8x8 kernels).
+**Kernel size**: Small kernels make the model train faster and can allow for more numerous kernels to be applied, whereas large kernels may capture correlations between features that are farther apart. I decided to employ only two sizes of 4x4 and 8x8 because 16x16 is already the half size of the output of the penultimate convolution block (Quick experiments, not shown here, confirmed it performed worse than the 4x4 and 8x8 kernels).
 
 **Monochromity**: The as-downloaded images contain the full complement of the 3 RGB colors, all having the same values. I reduced the dimensions from 64x64x3 to 64x64x1. However, this is tricky as some libraries automatically rescale the images, which is not desirable. At the end, I wrote my own function to perform this task.
 
@@ -89,7 +94,10 @@ The solution is we upsample/downsample each class to a reasonable number. In the
 
 **Maximizing Contrast**: This is one sub-example of **data augmentation** and may shed light into why data augmentation does not work in this use case. I performed a quick experiment in which I rescaled the pixel intensity to 0 ≤ i ≤ 1 instead of just dividing by 255, the performance became worse. I believe that is because the absolute intensity contains information about an object or feature’s height or depth which would be distorted or lost when the scales are changed. By the same token you would not apply image rotation to an auto-driving use case, since cars are never upside down, or image reflection to facial recognition since there is a difference between one’s regular and reflected image (e.g. hair partition).
 
-**_RESULTS_**
+<h2>RESULTS</h2>
+
+
+<h3>Defect DETECTION (Screen for defects, regardless of defect class)</h3>
 
 I trained six model with the following parameters. They will be referred to as follows.
 |     | **3x3 kernels** | **5x5 kernels** | **7x7 kernels** | **9x9 kernels** |
@@ -97,21 +105,18 @@ I trained six model with the following parameters. They will be referred to as f
 | **8 kernels + 16 kernels + 32 kernels (8,16,32)** | A-1 | B-1 | C-1 | D-1 |
 | **16 kernels + 32 kernels + 64 kernels (16,32,64)** | A-2 | B-2 | C-2 | D-2 |
 
-
-
-**Defect DETECTION (Screen for defects, regardless of defect class)**
+<u>Receiver Operational Characteristics (ROC-AUC)</u>
 
 For classification models with 2-classes, the most common tool is [Receiver Operational Characteristics](https://en.wikipedia.org/wiki/Receiver_operating_characteristic).  The metric is the Receiver Operational Characteristics Area Under the Curve (ROC-AUC).  A model that can perfectly separate two classes will have an ROC-AUC of 1, whereas a useless model that makes only random guesses will have an ROC-AUC of 0.5.
 
-Receiver Operational Characteristics (ROC-AUC)
 |     | **3x3 kernels** | **5x5 kernels** | **7x7 kernels** | **9x9 kernels** |
 | --- | --- | --- | --- | --- |
 | **8 kernels + 16 kernels + 32 kernels (8,16,32)** | **93.1%** | 91.8% | 91.8% | 88.4% |
 | **16 kernels + 32 kernels + 64 kernels (16,32,64)** | 91.5% | 92.4% | 89.2% | 89.8% |
 
-The following shows the ROC for the model A-1:
-
-<p><img src='./TILDA-defect-classific/images/model_results/roc_auc_B1.png' width="600"><p>
+<figure><img src='./TILDA-defect-classific/images/model_results/roc_auc_A1.png' width="600">
+        <figcaption>Receiver Operation Characteristics curve for A-1, with Area Under the Curve of 93.1%</figcaption>
+<figure>
 
 <u>Precision vs. Recall</u>
 
@@ -122,33 +127,29 @@ In a typical use case, there are two metrics that are important.
 
 For the _Good_ class, a business is more interesting in quality control, so the proper metric for this is _Precision_, which is the faction of the predicted class that is actually correct.  That is, if a model finds 100 good samples in the data set, what faction of them is correct, regardless of number of good samples of the original class?  For _Defects_, the focus is different.  Here is business is more interested in catching as many defects as possible to prevent them from being shipped.  _Recall_ is the fraction of the original class (in this case the _Defect_ class) to have been captured by the model.  
 
-It is important to note that both these models are affected by the threshold for the output.  The model outputs a probability of it being a defect for each sample.  The threshold is the probability above which is a _Defect_ and below which is a _Good_.   Typically that is set at 50%.  On the other hand, there are use cases that are very sensitive to defects.  In such cases the threshold can be lowered to capture more _defects_ and produce a _purer_ good class, but this is done at the expense "wasting" samples that are marginally _Good_ and misclassifying them as _Defects_ by the model.
-
-Precision
-
-The following is the precision confusion matrix for the model at 50% threshold with 8x8 (16, 32, 64) kernels. The threshold is set to 0.5. As one can see, the good predictions are 95.8% correct.
-
-Precision for the _Good_ class at 50% threshold.
 
 |     | **3x3 kernels** | **5x5 kernels** | **7x7 kernels** | **9x9 kernels** |
 | --- | --- | --- | --- | --- |
 | **8 kernels + 16 kernels + 32 kernels (8,16,32)** | 95.8% | 95.0%<sup>*<sup> | 95.0%<sup>*<sup> | 95.0%<sup>*<sup> |
 | **16 kernels + 32 kernels + 64 kernels (16,32,64)** | 94.5% | 95.4% | 96.1% | 94.4% |
 <sup>*</sup> These values appear the same only by co-incidence.   They are different after the 3<sup>rd</sup> significant figure.
+Table: Precision for the _Good_ class at 50% threshold (holdout)
 
-Recall for the _Defect_ class at 50% threshold.
 |     | **3x3 kernels** | **5x5 kernels** | **7x7 kernels** | **9x9 kernels** |
 | --- | --- | --- | --- | --- |
 | **8 kernels + 16 kernels + 32 kernels (8,16,32)** | 58.4% | 54.7% | **61.7%** | 44.0% | 
 | **16 kernels + 32 kernels + 64 kernels (16,32,64)** |44.9% | 50.6% | 50.2% | 50.6% | 
+Table: Recall for the _Defect_ class at 50% threshold (holdout)
 
-**2-class defect detection summary**
+It is important to note that both these models are affected by the threshold for the output.  The model outputs a probability of it being a defect for each sample.  The threshold is the probability above which is a _Defect_ and below which is a _Good_.   Typically that is set at 50%.  On the other hand, there are use cases that are very sensitive to defects.  In such cases the threshold can be lowered to capture more _defects_ and produce a _purer_ good class, but this is done at the expense "wasting" samples that are marginally _Good_ and misclassifying them as _Defects_ by the model. 
+
+<u>2-class defect detection summary</u>
 
 While model A-1 has the largest ROC-AUC, which is the most-used metric to evaluation the effectiveness of a 2-class model, it is important to note that model C-2 has the best _Precision_ for the _Good_ class at 96.1%, and C-1 has the best _Recall_ for the _Defect_ class of 61.7%.  It is likely that these two models perform very well only at the threshold of 50%.  The setting of this threshold depends on the business use case, which we are not privy to from the data set description.  In general, the model with the best ROC-AUC will have the best performance on the average, so we will follow the traditional metric of ROC-AUC and call A-1 our best 2-class model.
 
 **Overall, the results are satisfactory given the simplicity of the model. The ROC-AUC of 93.1%.  The Precision for the _Good_ class of 96.1% is impressive, and the Recall for the _Defect_ class of 58.4% is an improvement over the previous iteration of the models, even if there is room for improvement.**
 
-**Defect IDENTIFICATION**
+<h3>Defect IDENTIFICATION (4-class)</h3>
 
 Identification of the defects can be an important step to improving of the manufacturing process. From a modeling perspective, it presents a much more challenging problem. 
     1. The number of samples are small (see first table above _actual number of images for each class_). 
@@ -165,7 +166,7 @@ We will use the lower-case letters to refer to these 4-class models here to iden
 
 There are many ways to select the best model. They often depend on the use case.  For examples, some defects may be more costly to the company than others, so they should be emphasized more.  However, we are not privy to this information in our case, so we shall use the overall accuracy as the metric to select the best model. Below are the overall accuracies of the models. As one can see, they linger near the 50-60% levels.  While they are well above the baseline of ~25%, there is room for improvement.  
 
-Total accuracy
+<u>Total accuracy</u>
 
 |     | **3x3 kernels** | **5x5 kernels** | **7x7 kernels** | **9x9 kernels** |
 | --- | --- | --- | --- | --- |
@@ -173,35 +174,46 @@ Total accuracy
 | **16 kernels + 32 kernels + 64 kernels (16,32,64)** | 58.4% | 59.7% | 63.0% | 52.3% |
 
 
-We find the model c-2 is _nominally_ the best one.  Overall all the models' accuracies are within the range of 50% to 65%.  As already noted, larger kernels or more kernels do not necessarily produced the same results.  In fact, the worst model is the 9x9 kernels with 16-32-64 kernels.  Large kernels may not be flexible enough to capture the intracacies of the irregularity of the defects in our images.   More kernels may end up cause the model to overfit the training data.  
+We find the model c-2 is _nominally_ the best one.  Overall all the models' accuracies are within the range of 50% to 65%.  As already noted, larger kernels or more kernels do not necessarily produced the same results.  In fact, the worst model is the 9x9 kernels with 16-32-64 kernels.  Large kernels may not be flexible enough to capture the intracacies of the irregularity of the defects in our images.   More kernels of the same size may end up causing the model to overfit the training data.  
 
 
-**Model c-2 (7 x 7 kernels, 16 kernels in the first layer)**
+<u>Model c-2 (7 x 7 kernels, 16 kernels in the first layer)</u>
 
 The following are the relevant confusion matrix for model c-2. Recall measures how many of the actual defects were flagged by the model.  It is the best metric here because _a-priori_ we are not aware of any preference for a class.
 
-Here one can see the model performs especially well for the "thread error" and “objects” classes and poorly for the “hole” class. These are the most and least populous class in the data set, respectively, so this is all expected.
-
 <figure>
 <p><img src='./TILDA-defect-classific/images/model_results/3-5-7-9_kernels/4-class_7x7-16_count_conf_mat.png' width="600"><p>
-    <figcaption>Confusion matrix for _count_ of each class (holdout)</figcaption>
+    <figcaption>Confusion matrix for COUNT of each class (holdout) for model c-2  <strong>7x7 </strong> kernals 16 on first block</figcaption>
 </figure>
 
 
 <figure>
     <img src='./TILDA-defect-classific/images/model_results/3-5-7-9_kernels/4-class_7x7_16_recall_conf_mat.png' width="600">
-    <figcaption>Confusion matrix for _recall_ of each class (holdout)</figcaption>
+    <figcaption>Confusion matrix for RECALL of each class (holdout) for model c-2  <strong>7x7</strong> kernals 16 on first block</figcaption>
 </figure>
 
-**Improvements opportunities**
+Here one can see the model performs especially well for the "thread error" and “objects” classes and poorly for the “hole” class. These are the most and least populous class in the data set, respectively, so this is all expected.
 
-1. There is strong evidence from the (4-class) defect identification model results that different kernel sizes can target different defect types. The new model should have 2 or more kernel sizes instead of one.
+One disappointing results was the relatively low _Recall_ for the _hole_ class defects.  While the dearth of data is a probable cause, it is also possible that the small sizes of the _hole_ defects may be more effectively extracted by smaller kernels.  We looked at the _Recall_ confusion matrix a-1 (**3x3** kernels with 8-16-32 kernels on the 3 blocks).  See below.
+
+<figure>
+    <img src='./TILDA-defect-classific/images/model_results/3-5-7-9_kernels/4-class_3x3_8_recall_conf_mat.png' width="600">
+    <figcaption>Confusion matrix for RECALL of each class (holdout) model a-1  <strong>3x3</strong> kernels 8 on first block</figcaption>
+</figure>
+
+It turns out the recall for _holes_ defects is much higher at 67.8%, but dropped for the other classes (the over accuracies was 58.0%).  Thus, it demostrates that it is possible certain defects are better targeted by certain kernel sizes.
+
+**Like its 2-class counterpart, the results of the 4-class model are satisfactory given the small data set and the large number of mislabeled data.  It achieved _Recall_ for the _Objects_ of 65% and _Thread_Errors_ of 79%, but did not perform well for the _hole_ class.**
+
+**Future improvements opportunities**
+
+1. There is strong evidence from the (4-class) defect identification model results with different kernel sizes can target different defect types. The new model with 2 or more kernel sizes instead of one should be explored.
 
 2. The dearth of defect class samples is clearly a direct cause of inferior results (e.g. holes). One way to just artificially increase the weights of these samples so the model will pay more attention to them. However, this will be done at the expense of accuracy for the other classes. Another possible avenue to explore is to train a Generative Adversarial Network (GAN) to generate more defect samples. However, this work will require probably a lot more effort than building these two models so far, so the business case must justify it to proceed.
 
 
 
-**_SHAPLEY value analysis_**
+<h2>SHAPLEY value analysis</h2>
 
 [_Shapley Values_](https://www.investopedia.com/terms/s/shapley-value.asp#:~:text=Essentially%2C%20the%20Shapley%20value%20is,or%20less%20than%20the%20others.) are derives from the _marginal contribution_ of each feature to a prediction, after applying all other features. In game theory, Shapley values help determine how much each player in a collaborative game has contributed to the total payout. For a machine learning model, each feature is considered a "player". The Shapley value for a feature represents the average magnitude of that feature's contribution across all possible combinations of features. Specifically, Shapley values are calculated by comparing a model's predictions with and without a particular feature present. This is done iteratively for each feature and each sample in the dataset. By assigning each feature an importance value for every prediction, SHAP values provide a local, consistent explanation of how the model behaves. They reveal which features have the most impact on a specific prediction, whether positively or negatively. This is valuable for understanding the reasoning behind complex machine learning models such as [_deep neural networks_](https://www.kdnuggets.com/2023/08/shap-values-model-interpretability-machine-learning.html)
 
@@ -211,7 +223,7 @@ Below show sample shap images of the two models.
 1.  In each case, there is a sample with red dots (right) and blue dots (left).  Red spots indicate pixels that support the hypothesis (_defect_ in the 2-class model, or _individual defect_ class in the 4-class model).  They work in opposition to each other, like positive and negative numbers, but in a non-linear fashion.   
 2.  In the 4-class model, the defect class with the with the most red will "win".
 
-DEFECT DETECTION (2-CLASS)
+<h3>DEFECT DETECTION (2-CLASS)</h3>
 
 **<span style="color:red">TRUE POSITIVE (Actual = _Defect_, Predicted = _Defect_)**</span>.
 
@@ -249,7 +261,7 @@ This is probably the most important error for a business, because it is actually
     
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/False_negatives/GS_2cl_reload_shapval_3_8_img1916.png' width="600"  style="border: 5px solid green;"><p>
 
-DEFECT DETECTION (4-Class)
+<h3>DEFECT DETECTION (4-Class)</h3>
 
 When viewing the 4-class shapley plots, it is especially important to pay attention to the negative (blue) shapley values because they represent _counter-evidence_ of an image being in that class. Often an image is red on one side, but also blue or even blue on the other, thus the positive evidence all gets canceled.
 
@@ -292,11 +304,13 @@ _INCORRECT PREDICTIONS_ (Correct prediction = _Thread Error_):
 The false _thread errors_ predictions tend to _not_ long in shape. For example, the image on the right did not a have clearly defined bright spot, and so it was predicted as an _oil spot_.  The image on the left has a round bright or oblong bright spot, so it was predicted to be of _objects_ class.  It is entirely possible for these two images to have been mislabeled.  <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/thread_error/incorrect/GS_4cl_reload_shapval_7_16_img0048.png' width="400" style="border: 5px solid green;"><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/thread_error/incorrect/GS_4cl_reload_shapval_7_16_img0043.png' width="400" style="border: 5px solid green;"><p>
 
 
-**APPENDIX: CNN kernelS  (_For curiosity only, not much utility in this use case_)**
+<h2>APPENDIX: CNN kernel (_For curiosity only, not much utility in this use case_)</h2>
 
 It is generally interesting if not educational to examine the kernels to see what kinds of generalized features the CNN is paying attention to. For example, in the automobile classification model (<https://www.analyticsvidhya.com/blog/2021/06/beginner-friendly-project-cat-and-dog-classification-using-cnn/>) we can see the the low-level features are built up to form higher level featues that resemble car parts.
-
-![Example kernels for auto model](./TILDA-defect-classific/images/CNN_kernels/kernels_auto_model.png)
+<figure>
+    <img src='./TILDA-defect-classific/images/CNN_filters/filters_auto_model.png' width="600">
+    <figcaption>Kernels the first 3 blocks for a automobile classification model</figcaption>
+</figure>
 
 Unfortunately, in this use case, the generalized features are not so obvious. The likely explanation is that the defects that are irregular in shape and sizes, so the fundamental building blocks more difficult to visualize the break-down. Nevertheless, **for completeness**, we show some selected examples of the features of the three convolutional blocks of the detection and identification models.
 
