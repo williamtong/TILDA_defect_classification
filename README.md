@@ -95,8 +95,6 @@ The solution is we upsample/downsample each class to a reasonable number. In the
 **Maximizing Contrast**: This is one sub-example of **data augmentation** and may shed light into why data augmentation does not work in this use case. I performed a quick experiment in which I rescaled the pixel intensity to 0 ≤ i ≤ 1 instead of just dividing by 255, the performance became worse. I believe that is because the absolute intensity contains information about an object or feature’s height or depth which would be distorted or lost when the scales are changed. By the same token you would not apply image rotation to an auto-driving use case, since cars are never upside down, or image reflection to facial recognition since there is a difference between one’s regular and reflected image (e.g. hair partition).
 
 <h2>RESULTS</h2>
-
-
 <h3>Defect DETECTION (Screen for defects, regardless of defect class)</h3>
 
 I trained six model with the following parameters. They will be referred to as follows.
@@ -117,6 +115,8 @@ For classification models with 2-classes, the most common tool is [Receiver Oper
 <figure><img src='./TILDA-defect-classific/images/model_results/roc_auc_A1.png' width="600">
         <figcaption>Receiver Operation Characteristics curve for A-1, with Area Under the Curve of 93.1%</figcaption>
 <figure>
+<br>
+</br>
 
 <u>Precision vs. Recall</u>
 
@@ -186,12 +186,14 @@ The following are the relevant confusion matrix for model c-2. Recall measures h
     <figcaption>Confusion matrix for COUNT of each class (holdout) for model c-2  <strong>7x7 </strong> kernals 16 on first block</figcaption>
 </figure>
 <br>
+</br>
 
 <figure>
     <img src='./TILDA-defect-classific/images/model_results/3-5-7-9_kernels/4-class_7x7_16_recall_conf_mat.png' width="600">
     <figcaption>Confusion matrix for RECALL of each class (holdout) for model c-2  <strong>7x7</strong> kernals 16 on first block</figcaption>
 </figure>
 <br>
+</br>
 
 Here one can see the model performs especially well for the "thread error" and “objects” classes and poorly for the “hole” class. These are the most and least populous class in the data set, respectively, so this is all expected.
 
@@ -202,6 +204,8 @@ One disappointing results was the relatively low _Recall_ for the _hole_ class d
     <figcaption>Confusion matrix for RECALL of each class (holdout) model a-1  <strong>3x3</strong> kernels 8 on first block</figcaption>
 </figure>
 <br>
+</br>
+
 
 It turns out the recall for _holes_ defects is much higher at 67.8%, but dropped for the other classes (the over accuracies was 58.0%).  Thus, it demostrates that it is possible certain defects are better targeted by certain kernel sizes.
 
