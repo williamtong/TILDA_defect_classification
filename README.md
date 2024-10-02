@@ -268,12 +268,12 @@ Like the True negatives, the images fell into two types.
 
 **<span style="color:green">FALSE NEGATIVE (Actual = _Defect_, Predicted = _Good_)**</span>.
 
-This is probably the most important error for a business, because the nmodel is actually missing a sample that is defected.   There are two general types:
+This is probably the most important error for a business, because the model is actually missing a sample that is defected.   There are two general types:
 1.  The defect feature is so faint it was difficult to catch.  Here is an example.
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/False_negatives/GS_2cl_reload_shapval_3_8_img1106.png' width="600"  style="border: 5px solid green;"><p>
 <br>
 
-2.  It is clear that there are some samples that are mislabeled as defects. Below is an example. I challenge anyone to tell me this is a defect.  The data set has many of these.  The model, not surprising, only found a few pixels that would indicate there is a defect and classified it as _good_.
+2.  It is clear that some samples are mislabeled as defects. Below is an example. I challenge anyone to tell me this is a <u>defect</u>. The data set has many of these. The model, not surprising, only found a few pixels that would indicate there is a defect and classified it as <u>good</u>.
     
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/False_negatives/GS_2cl_reload_shapval_3_8_img1916.png' width="600"  style="border: 5px solid green;"><p>
 <br>
@@ -282,49 +282,49 @@ This is probably the most important error for a business, because the nmodel is 
 
 When viewing the 4-class shapley plots, it is especially important to pay attention to the negative (blue) shapley values because they represent _counter-evidence_ of an image being in that class. Often an image is red on one side, but also blue or even blue on the other, thus the positive evidence all gets canceled.
 
-<span style="color:red">**1. OBJECTS.**</span>
+<span style="color:red">**1. OBJECTS**</span>
     
-_CORRECT PREDICTIONS_
+_CORRECT OBJECTS PREDICTIONS_
     Here are two examples in which there are strong red in classes other than the correct _object_ classes, but those were overwhelmed by the strong negative values. Thus this makes the _objects_ class as the most likely prediction.  Note in both cases there is also a lot of signal for the class _thread errors_, indicating the model having a hard distinguishing them (see Recall confusion matrix above).
     <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/objects/correct/GS_4cl_reload_shapval_7_16_img0038.png' width="400"  style="border: 5px solid red;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/objects/correct/GS_4cl_reload_shapval_7_16_img0175.png' width="400" style="border: 5px solid red;"><p>
 <br>
 
 
-_INCORRECT PREDICTIONS_ (Correct prediction = _Objects_):
+_INCORRECT OBJECTS PREDICTIONS_ (Should have been _Objects_):
      <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/objects/incorrect/GS_4cl_reload_shapval_7_16_img0206.png' width="400" style="border: 5px solid red;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/objects/incorrect/GS_4cl_reload_shapval_7_16_img0162.png' width="400" style="border: 5px solid red;"><p>
 <br>
 
-<span style="color:orange">**2. HOLE.**</span>
+<span style="color:orange">**2. HOLE**</span>
 
 Hole is a challenging category for the model.  One reason is the lack of samples.  There are only 337 samples of _hole_ defects compared to 620 for the next numerous category of _thread error_.  Another possibility is mislabeling.  I will demonstrate below.
 
-_CORRECT PREDICTIONS_:
+_CORRECT HOLE PREDICTIONS_:
     These images are classified as _holes_ mostly based only the positive shapley values of the _hole_ category.  <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/hole/correct/GS_4cl_reload_shapval_7_16_img0089.png' width="400" style="border: 5px solid orange;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/hole/correct/GS_4cl_reload_shapval_7_16_img0020.png' width="400" style="border: 5px solid orange;"><p>
 <br>
 
-_INCORRECT PREDICTIONS_ (Correct prediction = _Hole_):
+_INCORRECT HOLE PREDICTIONS_ (Should have been _Hole_):
     The following two images both do not appear like _holes_.  This left image received a _thread error_ prediction, which appears to be correct.  The right image received an "object" prediction from the model.  I am not able to see any defects on the sample, so perhaps it should have been labeled as a _good_ sample. <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/hole/incorrect/GS_4cl_reload_shapval_7_16_img0016.png' width="400" style="border: 5px solid orange;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/hole/incorrect/GS_4cl_reload_shapval_7_16_img0022.png' width="400" style="border: 5px solid orange;"><p>
 <br>
 
-<span style="color:blue">**3. OIL SPOT.**</span>
+<span style="color:blue">**3. OIL SPOT**</span>
     
-_CORRECT PREDICTIONS_:
+_CORRECT OIL SPOT PREDICTIONS_:
     Here is an image that can appear as an _oil spot_ or a _thread error_ to the human eye. However, the model correctly surmised there is more evidence for _oil spot_ and more counter-evidence against _thread error,_ and predicted _oil spot._ <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/oil_spot/correct/GS_4cl_reload_shapval_4_16_img170.png' width="400" style="border: 5px solid blue;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/oil_spot/correct/GS_4cl_reload_shapval_7_16_img0045.png' width="400" style="border: 5px solid blue;"><p>
 <br>
 
-_INCORRECT PREDICTIONS_ (Correct prediction = _Oil Spot_):
+_INCORRECT OIL SPOT PREDICTIONS_ (Should have been _Oil Spot_):
     The _oil spot_ images that foiled the models tend to look have large blotches that look like objects.  This may be a case in which the model can be improved, perhaps by weighting this type of samples more in the training data set.  <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/oil_spot/incorrect/GS_4cl_reload_shapval_7_16_img0225.png' width="400" style="border: 5px solid blue;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/oil_spot/incorrect/GS_4cl_reload_shapval_7_16_img0189.png' width="400" style="border: 5px solid blue;"><p>
 <br>
 <span style="color:green">**4. THREAD ERROR**</span>.
     
-_CORRECT PREDICTIONS_:
+_CORRECT THREAD ERROR PREDICTIONS_:
     
 The _thread errors_ defects tend to be bright objects that are long in shape. <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/thread_error/correct/GS_4cl_reload_shapval_7_16_img0004.png' width="400" style="border: 5px solid green;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/thread_error/correct/GS_4cl_reload_shapval_7_16_img0210.png' width="400" style="border: 5px solid green;"><p>
 <br>
 
-_INCORRECT PREDICTIONS_ (Correct prediction = _Thread Error_):
+_INCORRECT THREAD ERROR PREDICTIONS_ (Should have been _Thread Error_):
 
-The false _thread errors_ predictions tend to _not_ long in shape. For example, the image on the right did not a have clearly defined bright spot, and so it was predicted as an _oil spot_.  The image on the left has a round bright or oblong bright spot, so it was predicted to be of _objects_ class.  It is entirely possible for these two images to have been mislabeled.  <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/thread_error/incorrect/GS_4cl_reload_shapval_7_16_img0048.png' width="400" style="border: 5px solid green;"><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/thread_error/incorrect/GS_4cl_reload_shapval_7_16_img0043.png' width="400" style="border: 5px solid green;"><p>
+The false _thread errors_ predictions tend _not_ to be long in shape. For example, the image on the right does not a have clearly defined bright spot, and so it was predicted as an _oil spot_.  The image on the left has a round bright or oblong bright spot, so it was predicted to be of _objects_ class.  It is entirely possible for these two images to have been mislabeled.  <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/thread_error/incorrect/GS_4cl_reload_shapval_7_16_img0048.png' width="400" style="border: 5px solid green;"><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/thread_error/incorrect/GS_4cl_reload_shapval_7_16_img0043.png' width="400" style="border: 5px solid green;"><p>
 <br>
 
 <h2>APPENDIX: CNN kernels (<em>For curiosity only, not much utility in this use case</em>)</h2>
