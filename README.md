@@ -118,14 +118,11 @@ For classification models with 2-classes, the most common tool is [Receiver Oper
 <br>
 </br>
 
-<h4>Precision of <i>Good</i> and Recall of <i>Defect</i></h4>
+<h4>Precision of <i>Good</i> class and Recall of <i>Defect</i> class</h4>
 A business is in general interested in quality control, so it wants to maximize the purity of the _Good_ class. The proper metric for this is <i>Precision</i>, which is the fraction of the predicted class that is actually correct.  That is, if a model finds 100 good samples in the data set, what fraction of them is correct, regardless of number of good samples of the original class?  For <i>Defects</i>, the focus of the business is different.  Here it is more interested in catching as many defects as possible to prevent them from being shipped.  <i>Recall</i> is the fraction of the predicted <i>Defect</i> class that is correct, and so is the other metric a business would be interested in.  
     
 1.  Precision for the _Good_ class, because we don’t want the _Defected_ textile to be mixed in with the _Good_ and shipped to the customers.
 2.  Recall for the _Defect_ class, because we want to know how many actual defects were flagged by the model (we want as high as possible).
-
-
-
 
 |     | **3x3 kernels** | **5x5 kernels** | **7x7 kernels** | **9x9 kernels** |
 | --- | --- | --- | --- | --- |
@@ -175,6 +172,9 @@ There are many ways to select the best model. They often depend on the use case.
 | --- | --- | --- | --- | --- |
 | **8 kernels + 16 kernels + 32 kernels (8,16,32)** | 58.0% | 61.7% | 59.3% | 60.9% |
 | **16 kernels + 32 kernels + 64 kernels (16,32,64)** | 58.4% | 59.7% | 63.0% | 52.3% |
+
+Table: Accuracy for each of the _Defect_ classes (holdout)<br>
+</br>
 
 
 We find the model c-2 is _nominally_ the best one.  The models' accuracies are all within the range of 50% to 65%.  As already noted, larger kernels or more kernels do not necessarily produce the same results.  In fact, the worst model is the 9x9 kernels with 16-32-64 kernels.  Large kernels may not be flexible enough to capture the intricacies of the irregularity of the defects in our images.   More kernels of the same size may end up causing the model to overfit the training data.  
