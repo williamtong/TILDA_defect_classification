@@ -243,16 +243,18 @@ For the correctly predicted _Good_ images, they typically fall into two types.
 2.  The images are very noisy or "dirty."  It has all kinds of features but of the types that indicate a defect and ones that indicate a clean sample.  They features are about equal in numbers, so they cancel each other.  Here is an example.
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/True_negatives/GS_2cl_reload_shapval_3_8_img0846.png' width="600" style="border: 5px solid orange;"><p>
 
-**<span style="color:blue">FALSE POSITIVE (Actual = _Good_, Predicted = _Defect_)**</span>.
+**<span style="color:blue">FALSE POSITIVE (Actual = _Good_, Predicted = _Defect_)**</span>
+
 Like the True negatives, the images fell into two types.
     
-1.  The images are very noisy or "dirty."  However, in this case, the model mistook the noise for actual defects and misclassified them as such.  The following is an example.
+1.  Some of good images mentioned just above which are so noisy or "dirty" that the model mistook the noise for actual defects and misclassified them as such.  The following is an example.
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/False_positives/GS_2cl_reload_shapval_3_8_img1396.png' width="600" style="border: 5px solid blue;"><p>
 
 2.  The images are overall very clean but with very light features that are mistaken for a defects.  Below is an example. 
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/False_positives/GS_2cl_reload_shapval_3_8_img0141.png' width="600" style="border: 5px solid blue;"><p>
 
 **<span style="color:green">FALSE NEGATIVE (Actual = _Defect_, Predicted = _Good_)**</span>.
+
 This is probably the most important error for a business, because it is actually missing a sample that is defected.   There are two general types:
 1.  The defect feature is so faint it was difficult to catch.  Here is an example.
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/False_negatives/GS_2cl_reload_shapval_3_8_img1106.png' width="600"  style="border: 5px solid green;"><p>
@@ -314,7 +316,7 @@ It is generally interesting if not educational to examine the kernels to see wha
 
 Unfortunately, in this use case, the generalized features are not so obvious. The likely explanation is that the defects that are irregular in shape and sizes, so the fundamental building blocks more difficult to visualize the break-down. Nevertheless, **for completeness**, we show some selected examples of the features of the three convolutional blocks of the detection and identification models.
 
-<span style="color:red">**CNN kernelS FOR _2-CLASS_ DEFECT DETECTION MODEL:**
+<h3><span style="color:red">CNN kernelS FOR _2-CLASS_ DEFECT DETECTION MODEL:</h3>
 
 <span style="color:red">**1<sup>st</sup> layer kernels**
 <p><img src='./TILDA-defect-classific/images/CNN_filters/2-class/2class_layer0filters.png' width="800"  alt="your-image-description"  style="border: 5px solid RED;"><p>
@@ -325,12 +327,12 @@ Unfortunately, in this use case, the generalized features are not so obvious. Th
 <span style="color:red">**3<sup>rd</sup> block kernels (random sample of 128)**
 <p><img src='./TILDA-defect-classific/images/CNN_filters/2-class/2class_layer8filters.png' width="800" style="border: 5px solid RED;"><p>
 
-<span style="color:green">**CNN kernelS FOR _4-CLASS_ DEFECT IDENTIFICATION MODEL:**
+<h3><span style="color:green">CNN kernelS FOR _4-CLASS_ DEFECT IDENTIFICATION MODEL:</h3>
 
 <span style="color:green">**1<sup>st</sup> layer kernels**
 <p><img src='./TILDA-defect-classific/images/CNN_filters/4-class/4class_layer0filters.png' width="800" style="border: 5px solid green;"><p>
 
-<span style="color:green">**2<sup>nd</sup> block kernels (random sample of 128)****
+<span style="color:green">**2<sup>nd</sup> block kernels (random sample of 128)**<span>
 <p><img src='./TILDA-defect-classific/images/CNN_filters/4-class/4class_layer4filters.png' width="800" style="border: 5px solid green;"><p>
 
 <span style="color:green">**3<sup>rd</sup> block kernels (random sample of 128)**</span>.
