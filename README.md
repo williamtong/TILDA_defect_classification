@@ -58,7 +58,7 @@ From the above random samples, one can see the original classification may have 
 1. _Objects_: Both samples 152_patch_5-7.png and 371_patch_2-4.png do not appear to have any defects (so should have been in the _good_ class).
 2. _Thread error_: Sample 128_patch2-3.png does not contain any obvious defect to the naked eye.
 3. _Hole_: Sample 034_patch3-1.png does not appear to have a hole.
-4. _Hole_: Sample 019_patch2-4.png appears to be an _objects_defect instead of a _hole_ defect.
+4. _Hole_: Sample 019_patch2-4.png appears to be an _objects_ defect instead of a _hole_ defect.
 
 It is also interesting to note that the holes appear as bright spot, which leads me to believe that the contrast for all the samples have been reversed, or there is an illumination source from below the sample. However, that does not affect the modeling.
 
