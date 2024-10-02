@@ -187,10 +187,12 @@ The following are the relevant confusion matrix for model c-2. Recall measures h
 </figure>
 
 
+
 <figure>
     <img src='./TILDA-defect-classific/images/model_results/3-5-7-9_kernels/4-class_7x7_16_recall_conf_mat.png' width="600">
     <figcaption>Confusion matrix for RECALL of each class (holdout) for model c-2  <strong>7x7</strong> kernals 16 on first block</figcaption>
 </figure>
+
 
 Here one can see the model performs especially well for the "thread error" and “objects” classes and poorly for the “hole” class. These are the most and least populous class in the data set, respectively, so this is all expected.
 
@@ -200,6 +202,7 @@ One disappointing results was the relatively low _Recall_ for the _hole_ class d
     <img src='./TILDA-defect-classific/images/model_results/3-5-7-9_kernels/4-class_3x3_8_recall_conf_mat.png' width="600">
     <figcaption>Confusion matrix for RECALL of each class (holdout) model a-1  <strong>3x3</strong> kernels 8 on first block</figcaption>
 </figure>
+
 
 It turns out the recall for _holes_ defects is much higher at 67.8%, but dropped for the other classes (the over accuracies was 58.0%).  Thus, it demostrates that it is possible certain defects are better targeted by certain kernel sizes.
 
