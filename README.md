@@ -3,7 +3,7 @@
 <h3>Top line results</h3>
 
 1.  I trained two CNN models, one to detect defects, another to identify what class the defect is.
-2.  The best 2-class defect detection model (A-1, with 3x3 kernels and 8 x 2<sup>n</sup> kernels per block) has an ROC-AUC of **93.1%**, a Recall for the _good_ class of 95.8%, and a Recall of 58.4% for the _defect_ class at thresholds of 50%.   The model C-1 has a higher _Defect_ Recall of 61.7% but both its ROC-AUC and _Good_ Precision are lower at 91.8% and 95.0%, resprecitive.  Thus this model may be desirable for certain business use cases, but for our purpose, we will employ the classic metric of best ROC-AUC.  The model A-1 will be the best model for our analysis.
+2.  The best 2-class defect detection model (A-1, with 3x3 kernels and 8 x 2<sup>n</sup> kernels per block) has an ROC-AUC of **93.1%**, a Recall for the _good_ class of 95.8%, and a Recall of 58.4% for the _defect_ class at thresholds of 50%.   The model C-1 has a higher _Defect_ Recall of 61.7% but both its ROC-AUC and _Good_ Precision are lower at 91.8% and 95.0%, respectively.  Thus this model may be desirable for certain business use cases, but for our purpose, we will employ the classic metric of best ROC-AUC.  The model A-1 will be the best model for our analysis.
 3.  The best 4-class defect identification model (c-2, with 7x7 kernels and 16 x 2<sup>n</sup> kernels per block) has an accuracy of **63.0%**, against a baseline of 25% (4 classes).  For this  4-class defect identification model, we achieve recall of 41.2%, 65.4%, 55.5%, 79.0% for the defect classes of _hole, objects, oil spot, thread error_, respectively.  Note there are 4 total classes so the baseline for a model that does "random guessing" is _25%_.  Thus the model is able extract signal.   In particular, this model performs very well for _objects_ and _thread error_, but not so well for holes.  This is largely because the dearth of _hole_ samples (only 337) vs. >600 for all other _Defect_ samples.
 
 <h2>INTRODUCTION</h2>
@@ -67,11 +67,11 @@ It is also interesting to note that the holes appear as bright spot, which leads
 The images are 64x64 pixels. We employ a segmented approach. First we use a 2-class CNN model to detect the defects. Then we employ a 4-class model to identify the defects. Both models have a very similar architecture. In both models, I employed a CNN network of 3 convolutional blocks, followed by a flattening, fully connected layer, and a finally softmax output layer. The only difference between the two models are the final softmax layer.
 
 1. We experimented with four (4) convolutional kernel sizes: 3x3, 5x5, 7x7, and 9x9.  (Note previous we employed kernels with _even_ number sizes.)  However, I have learned since then that even kernel sizes lead a problems when you desire the output to have the same size as the input. see [link](https://medium.com/geekculture/why-is-odd-sized-kernel-preferred-over-even-sized-kernel-a767e47b1d77)
-2. Each convolutional block starts with with 8 or 16 conv. kernels.
+2. Each convolutional block starts with 8 or 16 conv. kernels.
 3. They are successively doubled to 8x2<sup>n</sup> or 16x2<sup>n</sup> in the following blocks.
 4. After batch normalization, a 0.1 dropout layer is applied.
 5. Each block ends with a 2x2 maxpooling layer.
-6. The final output block is quite generic. The size of the fully connected layer is ¼ of the number of conv. kernels in the last conv. block. The softmax layer becomes a signmoid layer when the number of classes = 2.
+6. The final output block is quite generic. The size of the fully connected layer is ¼ of the number of conv. kernels in the last conv. block. The softmax layer becomes a sigmoid layer when the number of classes = 2.
 7. A evaluation data set (~10%) was used as the evaluation data set to monitor the progress of the model for _early stopping_.  
 8. We employed the [Adams optimizer](https://www.geeksforgeeks.org/adam-optimizer), which adapts the learning rates for each feature by incorporating both momentum and the first and second moments of the gradient. 
 
@@ -147,7 +147,7 @@ It is important to note that both these models are affected by the threshold for
 
 While model A-1 has the largest ROC-AUC, which is the most-used metric to evaluation the effectiveness of a 2-class model, it is important to note that model C-2 has the best _Precision_ for the _Good_ class at 96.1%, and C-1 has the best _Recall_ for the _Defect_ class of 61.7%.  It is likely that these two models perform very well only at the threshold of 50%.  The setting of this threshold depends on the business use case, which we are not privy to from the data set description.  In general, the model with the best ROC-AUC will have the best performance on the average, so we will follow the traditional metric of ROC-AUC and call A-1 our best 2-class model.
 
-**Overall, the results are satisfactory given the simplicity of the model. The ROC-AUC of 93.1%.  The Precision for the _Good_ class of 96.1% is impressive, and the Recall for the _Defect_ class of 58.4% is an improvement over the previous iteration of the models, even if there is room for improvement.**
+**Overall, the results are satisfactory given the simplicity of the model. The ROC-AUC of 93.1%.  The Precision for the _Good_ class of 96.1% is impressive, and the Recall fverallr the _Defect_ class verf 58.4% is an improvement over the previous iteration of the models, even if there is room for improvement.**
 
 <h3>Defect IDENTIFICATION (4-class)</h3>
 
@@ -173,7 +173,7 @@ There are many ways to select the best model. They often depend on the use case.
 | **16 kernels + 32 kernels + 64 kernels (16,32,64)** | 58.4% | 59.7% | 63.0% | 52.3% |
 
 
-We find the model c-2 is _nominally_ the best one.  Overall all the models' accuracies are within the range of 50% to 65%.  As already noted, larger kernels or more kernels do not necessarily produced the same results.  In fact, the worst model is the 9x9 kernels with 16-32-64 kernels.  Large kernels may not be flexible enough to capture the intracacies of the irregularity of the defects in our images.   More kernels of the same size may end up causing the model to overfit the training data.  
+We find the model c-2 is _nominally_ the best one.  The models' accuracies are all within the range of 50% to 65%.  As already noted, larger kernels or more kernels do not necessarily produce the same results.  In fact, the worst model is the 9x9 kernels with 16-32-64 kernels.  Large kernels may not be flexible enough to capture the intricacies of the irregularity of the defects in our images.   More kernels of the same size may end up causing the model to overfit the training data.  
 
 
 <h4>Model c-2 (7 x 7 kernels, 16 kernels in the first layer)</h4>
@@ -196,7 +196,7 @@ The following are the relevant confusion matrix for model c-2. Recall measures h
 
 Here one can see the model performs especially well for the "thread error" and “objects” classes and poorly for the “hole” class. These are the most and least populous class in the data set, respectively, so this is all expected.
 
-One disappointing results was the relatively low _Recall_ for the _hole_ class defects.  While the dearth of data is a probable cause, it is also possible that the small sizes of the _hole_ defects may be more effectively extracted by smaller kernels.  We looked at the _Recall_ confusion matrix a-1 (**3x3** kernels with 8-16-32 kernels on the 3 blocks).  See below.
+One disappointing result was the relatively low _Recall_ for the _hole_ class defects.  While the dearth of data is a probable cause, it is also possible that the small sizes of the _hole_ defects may be more effectively extracted by smaller kernels.  We looked at the _Recall_ confusion matrix a-1 (**3x3** kernels with 8-16-32 kernels on the 3 blocks).  See below.
 
 <figure>
     <img src='./TILDA-defect-classific/images/model_results/3-5-7-9_kernels/4-class_3x3_8_recall_conf_mat.png' width="600">
@@ -206,7 +206,7 @@ One disappointing results was the relatively low _Recall_ for the _hole_ class d
 </br>
 
 
-It turns out the recall for _holes_ defects is much higher at 67.8%, but dropped for the other classes (the over accuracies was 58.0%).  Thus, it demostrates that it is possible certain defects are better targeted by certain kernel sizes.
+It turns out the recall for _holes_ defects is much higher at 67.8%, but dropped for the other classes (the over accuracies was 58.0%).  Thus, it demonstrates that it is possible certain defects are better targeted by certain kernel sizes.
 
 **Like its 2-class counterpart, the results of the 4-class model are satisfactory given the small data set and the large number of mislabeled data.  It achieved _Recall_ for the _Objects_ of 65% and _Thread_Errors_ of 79%, but did not perform well for the _hole_ class.**
 
@@ -258,18 +258,18 @@ Like the True negatives, the images fell into two types.
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/False_positives/GS_2cl_reload_shapval_3_8_img1396.png' width="600" style="border: 5px solid blue;"><p>
 <br>
 
-2.  The images are overall very clean but with very light features that are mistaken for a defects.  Below is an example. 
+2.  The images are overall very clean but with very light features that are mistaken for a defect.  Below is an example. 
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/False_positives/GS_2cl_reload_shapval_3_8_img0141.png' width="600" style="border: 5px solid blue;"><p>
 <br>
 
 **<span style="color:green">FALSE NEGATIVE (Actual = _Defect_, Predicted = _Good_)**</span>.
 
-This is probably the most important error for a business, because it is actually missing a sample that is defected.   There are two general types:
+This is probably the most important error for a business, because the nmodel is actually missing a sample that is defected.   There are two general types:
 1.  The defect feature is so faint it was difficult to catch.  Here is an example.
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/False_negatives/GS_2cl_reload_shapval_3_8_img1106.png' width="600"  style="border: 5px solid green;"><p>
 <br>
 
-2.  It is clear that there are some samples that are mislabeled as defects. Below is an example. I challenge anyone to tell me this is a defect.  The data set has many of these.  The model, not surprising, only found a few pixels that would indicate there is a defect, and classified it as _good_.
+2.  It is clear that there are some samples that are mislabeled as defects. Below is an example. I challenge anyone to tell me this is a defect.  The data set has many of these.  The model, not surprising, only found a few pixels that would indicate there is a defect and classified it as _good_.
     
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/False_negatives/GS_2cl_reload_shapval_3_8_img1916.png' width="600"  style="border: 5px solid green;"><p>
 <br>
@@ -286,13 +286,13 @@ _CORRECT PREDICTIONS_
 <br>
 
 
-_INCORRECT PREDICTIONS_(Correct prediction = _Objects_):
+_INCORRECT PREDICTIONS_ (Correct prediction = _Objects_):
      <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/objects/incorrect/GS_4cl_reload_shapval_7_16_img0206.png' width="400" style="border: 5px solid red;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/objects/incorrect/GS_4cl_reload_shapval_7_16_img0162.png' width="400" style="border: 5px solid red;"><p>
 <br>
 
 <span style="color:orange">**2. HOLE.**</span>
 
-Hole is a challenging category for the model.  One reason is the lack of samples.  There are only 337 samples of _hole_ defects compared to 620 for the next numerous category of _thread error_.  Another possibility is mislabeling.  I will demostrate below.
+Hole is a challenging category for the model.  One reason is the lack of samples.  There are only 337 samples of _hole_ defects compared to 620 for the next numerous category of _thread error_.  Another possibility is mislabeling.  I will demonstrate below.
 
 _CORRECT PREDICTIONS_:
     These images are classified as _holes_ mostly based only the positive shapley values of the _hole_ category.  <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/hole/correct/GS_4cl_reload_shapval_7_16_img0089.png' width="400" style="border: 5px solid orange;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/hole/correct/GS_4cl_reload_shapval_7_16_img0020.png' width="400" style="border: 5px solid orange;"><p>
@@ -305,11 +305,11 @@ _INCORRECT PREDICTIONS_ (Correct prediction = _Hole_):
 <span style="color:blue">**3. OIL SPOT.**</span>
     
 _CORRECT PREDICTIONS_:
-    Here is an image the can appear as an _oil spot_ or a _thread error_ to the human eye. However, the model correctly surmised there is more evidence for _oil spot_ and more counter-evidence against _thread error,_ and predicted _oil spot._ <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/oil_spot/correct/GS_4cl_reload_shapval_4_16_img170.png' width="400" style="border: 5px solid blue;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/oil_spot/correct/GS_4cl_reload_shapval_7_16_img0045.png' width="400" style="border: 5px solid blue;"><p>
+    Here is an image that can appear as an _oil spot_ or a _thread error_ to the human eye. However, the model correctly surmised there is more evidence for _oil spot_ and more counter-evidence against _thread error,_ and predicted _oil spot._ <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/oil_spot/correct/GS_4cl_reload_shapval_4_16_img170.png' width="400" style="border: 5px solid blue;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/oil_spot/correct/GS_4cl_reload_shapval_7_16_img0045.png' width="400" style="border: 5px solid blue;"><p>
 <br>
 
 _INCORRECT PREDICTIONS_ (Correct prediction = _Oil Spot_):
-    The _oil spot_ iamges that foiled the models tend to look have large blotches that look like objects.  This may be a case in which the model can be improved, perhaps by weighting this type of samples more in the training data set.  <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/oil_spot/incorrect/GS_4cl_reload_shapval_7_16_img0225.png' width="400" style="border: 5px solid blue;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/oil_spot/incorrect/GS_4cl_reload_shapval_7_16_img0189.png' width="400" style="border: 5px solid blue;"><p>
+    The _oil spot_ images that foiled the models tend to look have large blotches that look like objects.  This may be a case in which the model can be improved, perhaps by weighting this type of samples more in the training data set.  <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/oil_spot/incorrect/GS_4cl_reload_shapval_7_16_img0225.png' width="400" style="border: 5px solid blue;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/oil_spot/incorrect/GS_4cl_reload_shapval_7_16_img0189.png' width="400" style="border: 5px solid blue;"><p>
 <br>
 <span style="color:green">**4. THREAD ERROR**</span>.
     
@@ -325,7 +325,7 @@ The false _thread errors_ predictions tend to _not_ long in shape. For example, 
 
 <h2>APPENDIX: CNN kernels (<em>For curiosity only, not much utility in this use case</em>)</h2>
 
-It is generally interesting if not educational to examine the kernels to see what kinds of generalized features the CNN is paying attention to. For example, in the automobile classification model (<https://www.analyticsvidhya.com/blog/2021/06/beginner-friendly-project-cat-and-dog-classification-using-cnn/>) we can see the the low-level features are built up to form higher level featues that resemble car parts.
+It is generally interesting if not educational to examine the kernels to see what kinds of generalized features the CNN is paying attention to. For example, in the automobile classification model (<https://www.analyticsvidhya.com/blog/2021/06/beginner-friendly-project-cat-and-dog-classification-using-cnn/>) we can see the low-level features are built up to form higher level featues that resemble car parts.
 <figure>
     <img src='./TILDA-defect-classific/images/CNN_filters/filters_auto_model.png' width="600">
     <figcaption>Kernels the first 3 blocks for a automobile classification model</figcaption>
