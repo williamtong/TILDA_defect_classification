@@ -103,7 +103,7 @@ I trained six model with the following parameters. They will be referred to as f
 | **8 kernels + 16 kernels + 32 kernels (8,16,32)** | A-1 | B-1 | C-1 | D-1 |
 | **16 kernels + 32 kernels + 64 kernels (16,32,64)** | A-2 | B-2 | C-2 | D-2 |
 
-<u>Receiver Operational Characteristics (ROC-AUC)</u>
+<h4>Receiver Operational Characteristics (ROC-AUC)</h4>
 
 For classification models with 2-classes, the most common tool is [Receiver Operational Characteristics](https://en.wikipedia.org/wiki/Receiver_operating_characteristic).  The metric is the Receiver Operational Characteristics Area Under the Curve (ROC-AUC).  A model that can perfectly separate two classes will have an ROC-AUC of 1, whereas a useless model that makes only random guesses will have an ROC-AUC of 0.5.
 
@@ -118,7 +118,7 @@ For classification models with 2-classes, the most common tool is [Receiver Oper
 <br>
 </br>
 
-<u>Precision vs. Recall</u>
+<h4>Precision vs. Recall</h4>
 
 In a typical use case, there are two metrics that are important.
     
@@ -143,7 +143,7 @@ Table: Recall for the _Defect_ class at 50% threshold (holdout)
 
 It is important to note that both these models are affected by the threshold for the output.  The model outputs a probability of it being a defect for each sample.  The threshold is the probability above which is a _Defect_ and below which is a _Good_.   Typically that is set at 50%.  On the other hand, there are use cases that are very sensitive to defects.  In such cases the threshold can be lowered to capture more _defects_ and produce a _purer_ good class, but this is done at the expense "wasting" samples that are marginally _Good_ and misclassifying them as _Defects_ by the model. 
 
-<u>2-class defect detection summary</u>
+<h4>2-class defect detection summary</h4>
 
 While model A-1 has the largest ROC-AUC, which is the most-used metric to evaluation the effectiveness of a 2-class model, it is important to note that model C-2 has the best _Precision_ for the _Good_ class at 96.1%, and C-1 has the best _Recall_ for the _Defect_ class of 61.7%.  It is likely that these two models perform very well only at the threshold of 50%.  The setting of this threshold depends on the business use case, which we are not privy to from the data set description.  In general, the model with the best ROC-AUC will have the best performance on the average, so we will follow the traditional metric of ROC-AUC and call A-1 our best 2-class model.
 
@@ -166,8 +166,7 @@ We will use the lower-case letters to refer to these 4-class models here to iden
 
 There are many ways to select the best model. They often depend on the use case.  For examples, some defects may be more costly to the company than others, so they should be emphasized more.  However, we are not privy to this information in our case, so we shall use the overall accuracy as the metric to select the best model. Below are the overall accuracies of the models. As one can see, they linger near the 50-60% levels.  While they are well above the baseline of ~25%, there is room for improvement.  
 
-<u>Total accuracy</u>
-
+<h4>Total accuracy</h4>
 |     | **3x3 kernels** | **5x5 kernels** | **7x7 kernels** | **9x9 kernels** |
 | --- | --- | --- | --- | --- |
 | **8 kernels + 16 kernels + 32 kernels (8,16,32)** | 58.0% | 61.7% | 59.3% | 60.9% |
@@ -177,7 +176,7 @@ There are many ways to select the best model. They often depend on the use case.
 We find the model c-2 is _nominally_ the best one.  Overall all the models' accuracies are within the range of 50% to 65%.  As already noted, larger kernels or more kernels do not necessarily produced the same results.  In fact, the worst model is the 9x9 kernels with 16-32-64 kernels.  Large kernels may not be flexible enough to capture the intracacies of the irregularity of the defects in our images.   More kernels of the same size may end up causing the model to overfit the training data.  
 
 
-<u>Model c-2 (7 x 7 kernels, 16 kernels in the first layer)</u>
+<h4>Model c-2 (7 x 7 kernels, 16 kernels in the first layer)</h4>
 
 The following are the relevant confusion matrix for model c-2. Recall measures how many of the actual defects were flagged by the model.  It is the best metric here because _a-priori_ we are not aware of any preference for a class.
 
