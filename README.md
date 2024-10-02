@@ -133,14 +133,16 @@ A business is in general interested in quality control, so it wants to maximize 
 | **16 kernels + 32 kernels + 64 kernels (16,32,64)** | 94.5% | 95.4% | 96.1% | 94.4% |
 <sup>*</sup> These values appear the same only by co-incidence.   They are different after the 3<sup>rd</sup> significant figure.
 
-Table: Precision for the _Good_ class at 50% threshold (holdout)
+Table: Precision for the _Good_ class at 50% threshold (holdout)<br>
+</br>
 
 |     | **3x3 kernels** | **5x5 kernels** | **7x7 kernels** | **9x9 kernels** |
 | --- | --- | --- | --- | --- |
 | **8 kernels + 16 kernels + 32 kernels (8,16,32)** | 58.4% | 54.7% | **61.7%** | 44.0% | 
 | **16 kernels + 32 kernels + 64 kernels (16,32,64)** |44.9% | 50.6% | 50.2% | 50.6% | 
 
-Table: Recall for the _Defect_ class at 50% threshold (holdout)
+Table: Recall for the _Defect_ class at 50% threshold (holdout)<br>
+</br>
 
 It is important to note that both these models are affected by the threshold for the output.  The model outputs a probability of it being a defect for each sample.  The threshold is the probability above which is a _Defect_ and below which is a _Good_.   Typically that is set at 50%.  On the other hand, there are use cases that are very sensitive to defects.  In such cases the threshold can be lowered to capture more _defects_ and produce a _purer_ good class, but this is done at the expense "wasting" samples that are marginally _Good_ and misclassifying them as _Defects_ by the model. 
 
