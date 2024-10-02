@@ -356,26 +356,32 @@ Unfortunately, in this use case, the generalized features are not so obvious. Th
 
 <h3><span style="color:red">CNN KERNELS FOR _2-CLASS_ DEFECT DETECTION MODEL:</h3>
 
+<span style="color:red">**1<sup>st</sup> block kernels**</span>
 <span style="color:red"><p><img src='./TILDA-defect-classific/images/CNN_filters/2-class/2class_layer0filters.png' width="800"  style="border: 5px solid RED;"><p>
-<span style="color:red">**1<sup>st</sup> layer kernels.**</span>
 <br>
 </br>
+
+<span style="color:red">**2<sup>nd</sup> block kernels**</span>
 <span style="color:red"><p><img src='./TILDA-defect-classific/images/CNN_filters/2-class/2class_layer4filters.png' width="800" style="border: 5px solid red;"><p>
-<span style="color:red">**2<sup>nd</sup> block kernels.**</span>
 <br>
 </br>
-<p><img src='./TILDA-defect-classific/images/CNN_filters/2-class/2class_layer8filters.png' width="800" style="border: 5px solid RED;"><p>
+
 <span style="color:red">**3<sup>rd</sup> block kernels**</span>
+<p><img src='./TILDA-defect-classific/images/CNN_filters/2-class/2class_layer8filters.png' width="800" style="border: 5px solid RED;"><p>
 <br>
 </br>
+
 <h3><span style="color:green">CNN kernelS FOR _4-CLASS_ DEFECT IDENTIFICATION MODEL:</h3>
+
+<span style="color:green">**1<sup>st</sup> block kernels**</span>
 <p><img src='./TILDA-defect-classific/images/CNN_filters/4-class/4class_layer0filters.png' width="800" style="border: 5px solid green;"><p>
-<span style="color:green">**1<sup>st</sup> layer kernels**</span>
 <br>
 </br>
-<p><img src='./TILDA-defect-classific/images/CNN_filters/4-class/4class_layer4filters.png' width="800" style="border: 5px solid green;"><p>
+
 <span style="color:green">**2<sup>nd</sup> block kernels**</span>
+<p><img src='./TILDA-defect-classific/images/CNN_filters/4-class/4class_layer4filters.png' width="800" style="border: 5px solid green;"><p>
 <br>
 </br>
-<p><img src='./TILDA-defect-classific/images/CNN_filters/4-class/4class_layer8filters.png' width="800" style="border: 5px solid green;"><p>
+
 <span style="color:green">**3<sup>rd</sup> block kernels**</span>
+<p><img src='./TILDA-defect-classific/images/CNN_filters/4-class/4class_layer8filters.png' width="800" style="border: 5px solid green;"><p>
