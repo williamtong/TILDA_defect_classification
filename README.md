@@ -186,14 +186,12 @@ The following are the relevant confusion matrix for model c-2. Recall measures h
     <figcaption>Confusion matrix for COUNT of each class (holdout) for model c-2  <strong>7x7 </strong> kernals 16 on first block</figcaption>
 </figure>
 <br>
-</br>
 
 <figure>
     <img src='./TILDA-defect-classific/images/model_results/3-5-7-9_kernels/4-class_7x7_16_recall_conf_mat.png' width="600">
     <figcaption>Confusion matrix for RECALL of each class (holdout) for model c-2  <strong>7x7</strong> kernals 16 on first block</figcaption>
 </figure>
 <br>
-</br>
 
 Here one can see the model performs especially well for the "thread error" and “objects” classes and poorly for the “hole” class. These are the most and least populous class in the data set, respectively, so this is all expected.
 
@@ -204,7 +202,6 @@ One disappointing results was the relatively low _Recall_ for the _hole_ class d
     <figcaption>Confusion matrix for RECALL of each class (holdout) model a-1  <strong>3x3</strong> kernels 8 on first block</figcaption>
 </figure>
 <br>
-</br>
 
 It turns out the recall for _holes_ defects is much higher at 67.8%, but dropped for the other classes (the over accuracies was 58.0%).  Thus, it demostrates that it is possible certain defects are better targeted by certain kernel sizes.
 
@@ -215,8 +212,6 @@ It turns out the recall for _holes_ defects is much higher at 67.8%, but dropped
 1. There is strong evidence from the (4-class) defect identification model results with different kernel sizes can target different defect types. The new model with 2 or more kernel sizes instead of one should be explored.
 
 2. The dearth of defect class samples is clearly a direct cause of inferior results (e.g. holes). One way to just artificially increase the weights of these samples so the model will pay more attention to them. However, this will be done at the expense of accuracy for the other classes. Another possible avenue to explore is to train a Generative Adversarial Network (GAN) to generate more defect samples. However, this work will require probably a lot more effort than building these two models so far, so the business case must justify it to proceed.
-
-
 
 <h2>SHAPLEY value analysis</h2>
 
@@ -235,12 +230,10 @@ Below show sample shap images of the two models.
     The image below shows the negative (blue) and positive (red) shapley values for each pixel of the image. The image was correctly classified by the model as _Defect_ (100% probability). One can see that the anomalous object on the lower right is drawing the positive attention (i.e. "there is a defect") of the model.  There is no feature that generated negative (i.e. "not defect") for the model. 
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/True_positives/GS_2cl_reload_shapval_3_8_img2494.png' width="600" style="border: 5px solid red;"><p>
 <br>
-</br>
 
     Another defect example is following, in which the model correctly located the anomalous feature on the image. There are scattered blue pixels in the image as well, but not nearly as numerous as red pixels to swing the prediction to negative.
  <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/True_positives/GS_2cl_reload_shapval_3_8_img2546.png ' width="600" style="border: 5px solid red;"><p>
 <br>
-</br>
 
 **<span style="color:orange">TRUE NEGATIVE (Actual = _Good_, predicted = _Good_)**</span>.
 
@@ -249,12 +242,10 @@ For the correctly predicted _Good_ images, they typically fall into two types.
 1. The images are very clean, and the model did not find any features of interest.  The following is an example.
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/True_negatives/GS_2cl_reload_shapval_3_8_img2495.png' width="600" style="border: 5px solid orange;"><p>
 <br>
-</br>
 
 2.  The images are very noisy or "dirty."  It has all kinds of features but of the types that indicate a defect and ones that indicate a clean sample.  They features are about equal in numbers, so they cancel each other.  Here is an example.
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/True_negatives/GS_2cl_reload_shapval_3_8_img0846.png' width="600" style="border: 5px solid orange;"><p>
 <br>
-</br>
 
 **<span style="color:blue">FALSE POSITIVE (Actual = _Good_, Predicted = _Defect_)**</span>
 
@@ -263,12 +254,10 @@ Like the True negatives, the images fell into two types.
 1.  Some of good images mentioned just above which are so noisy or "dirty" that the model mistook the noise for actual defects and misclassified them as such.  The following is an example.
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/False_positives/GS_2cl_reload_shapval_3_8_img1396.png' width="600" style="border: 5px solid blue;"><p>
 <br>
-</br>
 
 2.  The images are overall very clean but with very light features that are mistaken for a defects.  Below is an example. 
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/False_positives/GS_2cl_reload_shapval_3_8_img0141.png' width="600" style="border: 5px solid blue;"><p>
 <br>
-</br>
 
 **<span style="color:green">FALSE NEGATIVE (Actual = _Defect_, Predicted = _Good_)**</span>.
 
@@ -276,13 +265,11 @@ This is probably the most important error for a business, because it is actually
 1.  The defect feature is so faint it was difficult to catch.  Here is an example.
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/False_negatives/GS_2cl_reload_shapval_3_8_img1106.png' width="600"  style="border: 5px solid green;"><p>
 <br>
-</br>
 
 2.  It is clear that there are some samples that are mislabeled as defects. Below is an example. I challenge anyone to tell me this is a defect.  The data set has many of these.  The model, not surprising, only found a few pixels that would indicate there is a defect, and classified it as _good_.
     
 <p><img src='./TILDA-defect-classific/images/shap_plots/2-class/3x3_8-16-32_model/False_negatives/GS_2cl_reload_shapval_3_8_img1916.png' width="600"  style="border: 5px solid green;"><p>
 <br>
-</br>
 
 <h3>DEFECT DETECTION (4-Class)</h3>
 
@@ -294,13 +281,11 @@ _CORRECT PREDICTIONS_
     Here are two examples in which there are strong red in classes other than the correct _object_ classes, but those were overwhelmed by the strong negative values. Thus this makes the _objects_ class as the most likely prediction.  Note in both cases there is also a lot of signal for the class _thread errors_, indicating the model having a hard distinguishing them (see Recall confusion matrix above).
     <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/objects/correct/GS_4cl_reload_shapval_7_16_img0038.png' width="400"  style="border: 5px solid red;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/objects/correct/GS_4cl_reload_shapval_7_16_img0175.png' width="400" style="border: 5px solid red;"><p>
 <br>
-</br>
 
 
 _INCORRECT PREDICTIONS_(Correct prediction = _Objects_):
      <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/objects/incorrect/GS_4cl_reload_shapval_7_16_img0206.png' width="400" style="border: 5px solid red;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/objects/incorrect/GS_4cl_reload_shapval_7_16_img0162.png' width="400" style="border: 5px solid red;"><p>
 <br>
-</br>
 
 <span style="color:orange">**2. HOLE.**</span>
 
@@ -309,39 +294,31 @@ Hole is a challenging category for the model.  One reason is the lack of samples
 _CORRECT PREDICTIONS_:
     These images are classified as _holes_ mostly based only the positive shapley values of the _hole_ category.  <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/hole/correct/GS_4cl_reload_shapval_7_16_img0089.png' width="400" style="border: 5px solid orange;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/hole/correct/GS_4cl_reload_shapval_7_16_img0020.png' width="400" style="border: 5px solid orange;"><p>
 <br>
-</br>
 
 _INCORRECT PREDICTIONS_ (Correct prediction = _Hole_):
     The following two images both do not appear like _holes_.  This left image received a _thread error_ prediction, which appears to be correct.  The right image received an "object" prediction from the model.  I am not able to see any defects on the sample, so perhaps it should have been labeled as a _good_ sample. <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/hole/incorrect/GS_4cl_reload_shapval_7_16_img0016.png' width="400" style="border: 5px solid orange;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/hole/incorrect/GS_4cl_reload_shapval_7_16_img0022.png' width="400" style="border: 5px solid orange;"><p>
 <br>
-</br>
 
 <span style="color:blue">**3. OIL SPOT.**</span>
     
 _CORRECT PREDICTIONS_:
     Here is an image the can appear as an _oil spot_ or a _thread error_ to the human eye. However, the model correctly surmised there is more evidence for _oil spot_ and more counter-evidence against _thread error,_ and predicted _oil spot._ <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/oil_spot/correct/GS_4cl_reload_shapval_4_16_img170.png' width="400" style="border: 5px solid blue;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/oil_spot/correct/GS_4cl_reload_shapval_7_16_img0045.png' width="400" style="border: 5px solid blue;"><p>
 <br>
-</br>
 
 _INCORRECT PREDICTIONS_ (Correct prediction = _Oil Spot_):
     The _oil spot_ iamges that foiled the models tend to look have large blotches that look like objects.  This may be a case in which the model can be improved, perhaps by weighting this type of samples more in the training data set.  <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/oil_spot/incorrect/GS_4cl_reload_shapval_7_16_img0225.png' width="400" style="border: 5px solid blue;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/oil_spot/incorrect/GS_4cl_reload_shapval_7_16_img0189.png' width="400" style="border: 5px solid blue;"><p>
 <br>
-</br>
-
 <span style="color:green">**4. THREAD ERROR**</span>.
     
 _CORRECT PREDICTIONS_:
     
 The _thread errors_ defects tend to be bright objects that are long in shape. <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/thread_error/correct/GS_4cl_reload_shapval_7_16_img0004.png' width="400" style="border: 5px solid green;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/thread_error/correct/GS_4cl_reload_shapval_7_16_img0210.png' width="400" style="border: 5px solid green;"><p>
 <br>
-</br>
 
 _INCORRECT PREDICTIONS_ (Correct prediction = _Thread Error_):
 
 The false _thread errors_ predictions tend to _not_ long in shape. For example, the image on the right did not a have clearly defined bright spot, and so it was predicted as an _oil spot_.  The image on the left has a round bright or oblong bright spot, so it was predicted to be of _objects_ class.  It is entirely possible for these two images to have been mislabeled.  <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/thread_error/incorrect/GS_4cl_reload_shapval_7_16_img0048.png' width="400" style="border: 5px solid green;"><img src='./TILDA-defect-classific/images/shap_plots/4-class/7x7_16_32_64_model/thread_error/incorrect/GS_4cl_reload_shapval_7_16_img0043.png' width="400" style="border: 5px solid green;"><p>
 <br>
-</br>
-
 
 <h2>APPENDIX: CNN kernels (<em>For curiosity only, not much utility in this use case</em>)</h2>
 
@@ -351,7 +328,7 @@ It is generally interesting if not educational to examine the kernels to see wha
     <figcaption>Kernels the first 3 blocks for a automobile classification model</figcaption>
 </figure>
 <br>
-</br>
+
 Unfortunately, in this use case, the generalized features are not so obvious. The likely explanation is that the defects that are irregular in shape and sizes, so the fundamental building blocks more difficult to visualize the break-down. Nevertheless, **for completeness**, we show some selected examples of the features of the three convolutional blocks of the detection and identification models.
 
 <h3><span style="color:red">CNN KERNELS FOR <em>2-CLASS</em> DEFECT DETECTION MODEL:</h3>
@@ -368,7 +345,7 @@ Unfortunately, in this use case, the generalized features are not so obvious. Th
 <p><img src='./TILDA-defect-classific/images/CNN_filters/2-class/2class_layer8filters.png' width="800" style="border: 5px solid RED;"><p>
 <br>
 
-<h3><span style="color:green">CNN kernelS FOR <em>4-CLASS</em> DEFECT IDENTIFICATION MODEL:</h3>
+<h3><span style="color:green">CNN KERNELS FOR <em>4-CLASS</em> DEFECT IDENTIFICATION MODEL:</h3>
 
 <span style="color:green">**1<sup>st</sup> block kernels**</span>
 <p><img src='./TILDA-defect-classific/images/CNN_filters/4-class/4class_layer0filters.png' width="800" style="border: 5px solid green;"><p>
