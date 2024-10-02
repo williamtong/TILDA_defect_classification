@@ -343,7 +343,7 @@ The false _thread errors_ predictions tend to _not_ long in shape. For example, 
 </br>
 
 
-<h2>APPENDIX: CNN kernel (_For curiosity only, not much utility in this use case_)</h2>
+<h2>APPENDIX: CNN kernels (<em>For curiosity only, not much utility in this use case</em>)</h2>
 
 It is generally interesting if not educational to examine the kernels to see what kinds of generalized features the CNN is paying attention to. For example, in the automobile classification model (<https://www.analyticsvidhya.com/blog/2021/06/beginner-friendly-project-cat-and-dog-classification-using-cnn/>) we can see the the low-level features are built up to form higher level featues that resemble car parts.
 <figure>
@@ -354,34 +354,29 @@ It is generally interesting if not educational to examine the kernels to see wha
 </br>
 Unfortunately, in this use case, the generalized features are not so obvious. The likely explanation is that the defects that are irregular in shape and sizes, so the fundamental building blocks more difficult to visualize the break-down. Nevertheless, **for completeness**, we show some selected examples of the features of the three convolutional blocks of the detection and identification models.
 
-<h3><span style="color:red">CNN KERNELS FOR _2-CLASS_ DEFECT DETECTION MODEL:</h3>
+<h3><span style="color:red">CNN KERNELS FOR <em>2-CLASS</em> DEFECT DETECTION MODEL:</h3>
 
 <span style="color:red">**1<sup>st</sup> block kernels**</span>
 <span style="color:red"><p><img src='./TILDA-defect-classific/images/CNN_filters/2-class/2class_layer0filters.png' width="800"  style="border: 5px solid RED;"><p>
 <br>
-</br>
 
 <span style="color:red">**2<sup>nd</sup> block kernels**</span>
 <span style="color:red"><p><img src='./TILDA-defect-classific/images/CNN_filters/2-class/2class_layer4filters.png' width="800" style="border: 5px solid red;"><p>
 <br>
-</br>
 
 <span style="color:red">**3<sup>rd</sup> block kernels**</span>
 <p><img src='./TILDA-defect-classific/images/CNN_filters/2-class/2class_layer8filters.png' width="800" style="border: 5px solid RED;"><p>
 <br>
-</br>
 
-<h3><span style="color:green">CNN kernelS FOR _4-CLASS_ DEFECT IDENTIFICATION MODEL:</h3>
+<h3><span style="color:green">CNN kernelS FOR <em>4-CLASS</em> DEFECT IDENTIFICATION MODEL:</h3>
 
 <span style="color:green">**1<sup>st</sup> block kernels**</span>
 <p><img src='./TILDA-defect-classific/images/CNN_filters/4-class/4class_layer0filters.png' width="800" style="border: 5px solid green;"><p>
 <br>
-</br>
 
 <span style="color:green">**2<sup>nd</sup> block kernels**</span>
 <p><img src='./TILDA-defect-classific/images/CNN_filters/4-class/4class_layer4filters.png' width="800" style="border: 5px solid green;"><p>
 <br>
-</br>
 
 <span style="color:green">**3<sup>rd</sup> block kernels**</span>
 <p><img src='./TILDA-defect-classific/images/CNN_filters/4-class/4class_layer8filters.png' width="800" style="border: 5px solid green;"><p>
