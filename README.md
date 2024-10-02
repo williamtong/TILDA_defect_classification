@@ -118,14 +118,13 @@ For classification models with 2-classes, the most common tool is [Receiver Oper
 <br>
 </br>
 
-<h4>Precision vs. Recall</h4>
-
-In a typical use case, there are two metrics that are important.
+<h4>Precision of <i>Good</i> and Recall of <i>Defect</i></h4>
+A business is in general interested in quality control, so it wants to maximize the purity of the _Good_ class. The proper metric for this is <i>Precision</i>, which is the fraction of the predicted class that is actually correct.  That is, if a model finds 100 good samples in the data set, what fraction of them is correct, regardless of number of good samples of the original class?  For <i>Defects</i>, the focus of the business is different.  Here it is more interested in catching as many defects as possible to prevent them from being shipped.  <i>Recall</i> is the fraction of the predicted <i>Defect</i> class that is correct, and so is the other metric a business would be interested in.  
     
 1.  Precision for the _Good_ class, because we don’t want the _Defected_ textile to be mixed in with the _Good_ and shipped to the customers.
 2.  Recall for the _Defect_ class, because we want to know how many actual defects were flagged by the model (we want as high as possible).
 
-For the _Good_ class, a business is more interesting in quality control, so the proper metric for this is _Precision_, which is the faction of the predicted class that is actually correct.  That is, if a model finds 100 good samples in the data set, what faction of them is correct, regardless of number of good samples of the original class?  For _Defects_, the focus is different.  Here is business is more interested in catching as many defects as possible to prevent them from being shipped.  _Recall_ is the fraction of the original class (in this case the _Defect_ class) to have been captured by the model.  
+
 
 
 |     | **3x3 kernels** | **5x5 kernels** | **7x7 kernels** | **9x9 kernels** |
