@@ -64,15 +64,15 @@ It is also interesting to note that the holes appear as bright spot, which leads
 
 <h2>MODEL OVERVIEW</h2>
 
-The images are 64x64 pixels. We employ a segmented approach. First we use a 2-class CNN model to detect the defects. Then we employ a 4-class model to identify the defects. Both models have a very similar architecture. In both models, I employed a CNN network of 3 convolutional blocks, followed by a flattening, fully connected layer, and a finally softmax output layer. The only difference between the two models are the final softmax layer.
+The images are 64x64 pixels. We employ a segmented approach. First we use a 2-class CNN model to detect the defects. Then we employ a 4-class model to identify the defects. Both models have a very similar architecture. In both models, I employed a CNN network of 3 convolutional blocks, followed by a flattening, fully connected layer, and a finally softmax output layer. The only difference between the two models is the final softmax layer.
 
-1. We experimented with four (4) convolutional kernel sizes: 3x3, 5x5, 7x7, and 9x9.  (Note previous we employed kernels with _even_ number sizes.)  However, I have learned since then that even kernel sizes lead a problems when you desire the output to have the same size as the input. see [link](https://medium.com/geekculture/why-is-odd-sized-kernel-preferred-over-even-sized-kernel-a767e47b1d77)
+1. We experimented with four (4) convolutional kernel sizes: 3x3, 5x5, 7x7, and 9x9.  (Note previous we employed kernels with _even_ number sizes.)  However, I have learned since then that even kernel sizes lead to problems when you desire the output to have the same size as the input. see [link](https://medium.com/geekculture/why-is-odd-sized-kernel-preferred-over-even-sized-kernel-a767e47b1d77)
 2. Each convolutional block starts with 8 or 16 conv. kernels.
 3. They are successively doubled to 8x2<sup>n</sup> or 16x2<sup>n</sup> in the following blocks.
 4. After batch normalization, a 0.1 dropout layer is applied.
 5. Each block ends with a 2x2 maxpooling layer.
 6. The final output block is quite generic. The size of the fully connected layer is ¼ of the number of conv. kernels in the last conv. block. The softmax layer becomes a sigmoid layer when the number of classes = 2.
-7. A evaluation data set (~10%) was used as the evaluation data set to monitor the progress of the model for _early stopping_.  
+7. An evaluation data set (~10%) was used as the evaluation data set to monitor the progress of the model for _early stopping_.  
 8. We employed the [Adams optimizer](https://www.geeksforgeeks.org/adam-optimizer), which adapts the learning rates for each feature by incorporating both momentum and the first and second moments of the gradient. 
 
 <p><p>
@@ -85,7 +85,7 @@ The images are 64x64 pixels. We employ a segmented approach. First we use a 2-cl
 
 **Kernel size**: Small kernels make the model train faster and can allow for more numerous kernels to be applied, whereas large kernels may capture correlations between features that are farther apart. I decided to employ only two sizes of 4x4 and 8x8 because 16x16 is already the half size of the output of the penultimate convolution block (Quick experiments, not shown here, confirmed it performed worse than the 4x4 and 8x8 kernels).
 
-**Monochromity**: The as-downloaded images contain the full complement of the 3 RGB colors, all having the same values. I reduced the dimensions from 64x64x3 to 64x64x1. However, this is tricky as some libraries automatically rescale the images, which is not desirable. At the end, I wrote my own function to perform this task.
+**Monochromicity**: The as-downloaded images contain the full complement of the 3 RGB colors, all having the same values. I reduced the dimensions from 64x64x3 to 64x64x1. However, this is tricky as some libraries automatically rescale the images, which is not desirable. At the end, I wrote my own function to perform this task.
 
 **Dataset imbalance**: Each class is weighted by the inverse of its relative population during training. However, this is not sufficient. The problem is during _stochastic gradient descent_, the population of the minority class in each mini batch becomes so small that there are great variations from one mini batch to the next. For example, the _hole_ class has only 337 images. The test set has 0.1 of the population (34 images). If we have 32 minibatches, we will end up with only 2 _holes_ class images for each mini batch.
 The solution is we upsample/downsample each class to a reasonable number. In the defect detection model, we downsample the _Good_ class to ~5120 samples, and upsample each of the defect classes to ~1240 samples (summing to ~5120 samples). This way, the sample sizes are balanced, and each minibatch has a good distribution of each population.
@@ -184,7 +184,7 @@ The following are the relevant confusion matrix for model c-2. Recall measures h
 
 <figure>
 <p><img src='./TILDA-defect-classific/images/model_results/3-5-7-9_kernels/4-class_7x7-16_count_conf_mat.png' width="600"><p>
-    <figcaption>Confusion matrix for COUNT of each class (holdout) for model c-2  <strong>7x7 </strong> kernals 16 on first block</figcaption>
+    <figcaption>Confusion matrix for COUNT of each class (holdout) for model c-2  <strong>7x7 </strong> kernels 16 on first block</figcaption>
 </figure>
 <br>
 </br>
@@ -208,7 +208,7 @@ One disappointing result was the relatively low _Recall_ for the _hole_ class de
 </br>
 
 
-It turns out the recall for _holes_ defects is much higher at 67.8%, but dropped for the other classes (the over accuracies was 58.0%).  Thus, it demonstrates that it is possible certain defects are better targeted by certain kernel sizes.
+It turns out the recall for _holes_ defects is much higher at 67.8%, but dropped for the other classes (the overall accuracy was 58.0%).  Thus, it demonstrates that it is possible certain defects are better targeted by certain kernel sizes.
 
 **Like its 2-class counterpart, the results of the 4-class model are satisfactory given the small data set and the large number of mislabeled data.  It achieved _Recall_ for the _Objects_ of 65% and _Thread_Errors_ of 79%, but did not perform well for the _hole_ class.**
 
@@ -222,7 +222,7 @@ It turns out the recall for _holes_ defects is much higher at 67.8%, but dropped
 
 [_Shapley Values_](https://www.investopedia.com/terms/s/shapley-value.asp#:~:text=Essentially%2C%20the%20Shapley%20value%20is,or%20less%20than%20the%20others.) are derives from the _marginal contribution_ of each feature to a prediction, after applying all other features. In game theory, Shapley values help determine how much each player in a collaborative game has contributed to the total payout. For a machine learning model, each feature is considered a "player". The Shapley value for a feature represents the average magnitude of that feature's contribution across all possible combinations of features. Specifically, Shapley values are calculated by comparing a model's predictions with and without a particular feature present. This is done iteratively for each feature and each sample in the dataset. By assigning each feature an importance value for every prediction, SHAP values provide a local, consistent explanation of how the model behaves. They reveal which features have the most impact on a specific prediction, whether positively or negatively. This is valuable for understanding the reasoning behind complex machine learning models such as [_deep neural networks_](https://www.kdnuggets.com/2023/08/shap-values-model-interpretability-machine-learning.html)
 
-In a CNN model, the basic feature is the pixel. We employ the [shap](https://shap.readthedocs.io/en/latest/example_notebooks/overviews/An%20introduction%20to%20explainable%20AI%20with%20Shapley%20values.html) library [DeepExplainer](https://shap.readthedocs.io/en/latest/example_notebooks/image_examples/image_classification/Front%20Page%20DeepExplainer%20MNIST%20Example.html) function to visualize each pixel contribution to the prediction. Because the shap library is a little out of date, I had to write my own code display the results.
+In a CNN model, the basic feature is the pixel. We employ the [shap](https://shap.readthedocs.io/en/latest/example_notebooks/overviews/An%20introduction%20to%20explainable%20AI%20with%20Shapley%20values.html) library [DeepExplainer](https://shap.readthedocs.io/en/latest/example_notebooks/image_examples/image_classification/Front%20Page%20DeepExplainer%20MNIST%20Example.html) function to visualize each pixel's contribution to the prediction. Because the shap library is a little out of date, I had to write my own code display the results.
 
 Below show sample shap images of the two models. 
 1.  In each case, there is a sample with red dots (right) and blue dots (left).  Red spots indicate pixels that support the hypothesis (_defect_ in the 2-class model, or _individual defect_ class in the 4-class model).  They work in opposition to each other, like positive and negative numbers, but in a non-linear fashion.   
@@ -327,10 +327,10 @@ The false _thread errors_ predictions tend to _not_ long in shape. For example, 
 
 <h2>APPENDIX: CNN kernels (<em>For curiosity only, not much utility in this use case</em>)</h2>
 
-It is generally interesting if not educational to examine the kernels to see what kinds of generalized features the CNN is paying attention to. For example, in the automobile classification model (<https://www.analyticsvidhya.com/blog/2021/06/beginner-friendly-project-cat-and-dog-classification-using-cnn/>) we can see the low-level features are built up to form higher level featues that resemble car parts.
+It is generally interesting if not educational to examine the kernels to see what kinds of generalized features the CNN is paying attention to. For example, in the automobile classification model (<https://www.analyticsvidhya.com/blog/2021/06/beginner-friendly-project-cat-and-dog-classification-using-cnn/>) we can see the low-level features are built up to form higher level features that resemble car parts.
 <figure>
     <img src='./TILDA-defect-classific/images/CNN_filters/filters_auto_model.png' width="600">
-    <figcaption>Kernels the first 3 blocks for a automobile classification model</figcaption>
+    <figcaption>Kernels the first 3 blocks for an automobile classification model</figcaption>
 </figure>
 <br>
 
