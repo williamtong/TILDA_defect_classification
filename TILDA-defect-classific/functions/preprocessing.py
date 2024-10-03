@@ -84,6 +84,8 @@ def create_data_set(all_files, all_labels, label_dict, revlabel_dict,
     revlabel_dict (dict):           Reverse lookup dictionary of the label keys.
     target_samples_per_class_train: How many samples to upsample to for each class in the training set.
     target_samples_per_class_eval:  How many samples to upsample to for each class in the eval set.
+    label_code (int):               If label_code == 0, it means all labels are in good class for 2-class model, so
+                                    all labels should = 0.  Else leave label as is.
     
     '''
     
@@ -97,11 +99,6 @@ def create_data_set(all_files, all_labels, label_dict, revlabel_dict,
                                                  random_state = random_state + 92) #a 
     
     print(len(features_train), len(features_eval), len(features_test))
-
-    # For augmented data only (not implemented)
-    # features_train = map_path_to_augmented(features_train)
-    # features_eval = map_path_to_augmented(features_eval)
-    # features_test = map_path_to_augmented(features_test)
 
     if target_samples_per_class_train is not None:
         print(len(features_train), len(features_eval), len(features_test))
