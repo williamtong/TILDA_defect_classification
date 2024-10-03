@@ -142,24 +142,25 @@ def create_data_set(all_files, all_labels, label_dict, revlabel_dict,
     features_test_array = convert_arr_to_monochrome(features_test_array)
     print(f'features_train_array.shape: {features_train_array.shape}')
     print(f'features_test_array.shape: {features_test_array.shape}')
-    
+
+    # label_code == 0 means are labels are in the good class for the 2-class model, 
+    # so all labels should be set to 0.
     if label_code == 0:
         labels_train = [label_code]*len(features_train)
         labels_eval = [label_code]*len(features_eval)
         labels_test = [label_code]*len(features_test)
-        
     
     return features_train_array, features_eval_array, features_test_array, labels_train, labels_eval, labels_test
 
 
 def randomize(features, labels, random_seed = 98):
-    '''This function randomizes the feature and labels together.
+    '''This function randomizes the order of the features and labels together as pairs.
     Inputs:
     features (list):   List of features.
     '''
     print(len(features), len(labels))
     zipped_list = [x for x in zip(features, labels)]
-    random
+
     random.Random(random_seed).shuffle(zipped_list)
     features = [element[0] for element in zipped_list]
     labels = [element[1] for element in zipped_list]
