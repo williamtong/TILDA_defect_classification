@@ -82,10 +82,11 @@ Recall values of each defect in each model.  While general trends are difficult 
 1. A clear trend is the Recall of the <i>hole</i> defect class definitely improves with the addition of 3x3 kernels in the model.   That was the original intention of including them.   Hole defects tend to be smaller so 3x3 kernels may work better.
 2. Recall for <i>Objects</i> class defects also seems to improve with more 3x3 kernels, although the trend is less obvious than for <i>hole</i> defects.  Object defects have a range of sizes but many of then are smaller as well.
 3. The 3x3 kernels seem to have little efects for the other two classes, <i>oil_spot</i> and <i>thread_error</i>.  <i>Oil_spot</i> defects are long and width, and <i>thread_error</i> are long, so they may be less suitable for 3x3 kernels.
+4. The Recall for <i>thread_error</i> seems to be better in models with more 7x7 kernels.  As stated above, this defect tends to be larger in size, so a larger kernel may be for effective in capturing it.  However it is not clear why this deos not apply to <i>oil_spot</i> defects.
 
 
 <figure>
-<p><img src='./TILDA-defect-classific/images/introduction/2-kernelsizes/gridsearch_recall_hole.png' width="250"> <img src='./TILDA-defect-classific/images/introduction/2-kernelsizes/gridsearch_recall_objects.png' width="250"> <img src='./TILDA-defect-classific/images/introduction/2-kernelsizes/gridsearch_recall_oil_spot.png' width="250"> <img src='./TILDA-defect-classific/images/introduction/2-kernelsizes/gridsearch_recall_thread_error.png' width="250"><p>
+<p><img src='./TILDA-defect-classific/images/introduction/2-kernelsizes/gridsearch_recall_hole.png' width="300"> <img src='./TILDA-defect-classific/images/introduction/2-kernelsizes/gridsearch_recall_objects.png' width="300"> <img src='./TILDA-defect-classific/images/introduction/2-kernelsizes/gridsearch_recall_oil_spot.png' width="300"> <img src='./TILDA-defect-classific/images/introduction/2-kernelsizes/gridsearch_recall_thread_error.png' width="300"><p>
     <figcaption>Figure: (L) Overall accurracy of models with corresponding number of 3x3 and 7x7 kernels</figcaption>
 </figure>
 <br>
@@ -99,16 +100,16 @@ _CORRECT OBJECTS PREDICTIONS_
 
 For detection of the <i>objects</i> class, we see that the model relies more on the large 7x7 kernels to detect them.  The red patches for <i>objects</i>, which are signals for that class for the model, are only seen on the 7x7 branch.
 
-<p><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/objects/correct/GS_4cl_reload_shapval_[3, 7]_[4, 16]_img0196.png' width="700"  style="border: 5px solid red;"> 
-    <img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/objects/correct/GS_4cl_reload_shapval_[3, 7]_[4, 16]_img0062.png' width="700" style="border: 5px solid red;"><p>
+<p><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/objects/correct/GS_4cl_reload_shapval_3, 7_4, 16_img0196.png' width="700"  style="border: 5px solid red;"> 
+    <img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/objects/correct/GS_4cl_reload_shapval_3, 7_4, 16_img0062.png' width="700" style="border: 5px solid red;"><p>
 <br>
 
 
 _INCORRECT OBJECTS PREDICTIONS_ (Should have been _Objects_):
 
 This class was most commonly misclassified <i>thread errors</i>.  The two images below contain long streaks that look like a thread (compare this to a real thread error below).  Thus it is not surprising these images were misclassified as <i>thread errors.</i>
-<p><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/objects/incorrect/GS_4cl_reload_shapval_[3, 7]_[4, 16]_img0066.png' width="700" style="border: 5px solid red;"><p>
-<img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/objects/incorrect/GS_4cl_reload_shapval_[3, 7]_[4, 16]_img0235.png' width="700"  style="border: 5px solid red;"> 
+<p><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/objects/incorrect/GS_4cl_reload_shapval_3, 7_4, 16_img0066.png' width="700" style="border: 5px solid red;"><p>
+<img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/objects/incorrect/GS_4cl_reload_shapval_3, 7_4, 16_img0235.png' width="700"  style="border: 5px solid red;"> 
 <br></br>
 
 <span style="color:orange">**2. HOLE**</span>
@@ -116,23 +117,23 @@ This class was most commonly misclassified <i>thread errors</i>.  The two images
 Hole is a challenging category.  One reason is the lack of samples.  There are only 337 samples of _hole_ defects compared to 620 for the next numerous category of _thread error_.  In the prior work, we see signs that the 3x3 kernel model, which perform less well overall compared to the 7x7 kernel model, was effective in classifying the hole category.  I surmised that the smaller 3x3 kernels are better suited for the generally hole class defects.  From examples of shap_value images of the hole class below, we can indeed see that most of the red (postive) signal can come from the 3x3 kernels.
 
 _CORRECT HOLE PREDICTIONS_:
-    These images are classified as _holes_ mostly based only the positive shapley values of the _hole_ category.  <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/hole/correct/GS_4cl_reload_shapval_[3, 7]_[4, 16]_img0003.png' width="700" style="border: 5px solid orange;"><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/hole/correct/GS_4cl_reload_shapval_[3, 7]_[4, 16]_img0031.png' width="700" style="border: 5px solid orange;"><p>
+    These images are classified as _holes_ mostly based only the positive shapley values of the _hole_ category.  <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/hole/correct/GS_4cl_reload_shapval_3, 7_4, 16_img0003.png' width="700" style="border: 5px solid orange;"><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/hole/correct/GS_4cl_reload_shapval_3, 7_4, 16_img0031.png' width="700" style="border: 5px solid orange;"><p>
 <br>
 
 _INCORRECT HOLE PREDICTIONS_ (Should have been _Hole_):
     Hole class is also most often misclassied as <i>thread errors</i>.  We have two such examples here.  Both of which would not appear as <i>holes</i> to the human eye.  Note in both cases, the probabilities of prediction was not high even for the wrong class, indicating the uncertainty of the model.  This is likely a result of the dearth of training data resembling these defects that are correctly classfied.
-<p><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/hole/incorrect/GS_4cl_reload_shapval_[3, 7]_[4, 16]_img0020.png' width="700" style="border: 5px solid orange;">
-<img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/hole/incorrect/GS_4cl_reload_shapval_[3, 7]_[4, 16]_img0147.png' width="700" style="border: 5px solid orange;">
+<p><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/hole/incorrect/GS_4cl_reload_shapval_3, 7_4, 16_img0020.png' width="700" style="border: 5px solid orange;">
+<img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/hole/incorrect/GS_4cl_reload_shapval_3, 7_4, 16_img0147.png' width="700" style="border: 5px solid orange;">
 <p>
 <br>
 <span style="color:blue">**3. OIL SPOT**</span>
     
 _CORRECT OIL SPOT PREDICTIONS_:
-    <i>Oil spot</i> images tend to have a diffused dark area.  Here are two correctly classified examples below.<p><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/oil_spot/correct/GS_4cl_reload_shapval_[3, 7]_[4, 16]_img0006.png' width="700" style="border: 5px solid blue;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/oil_spot/correct/GS_4cl_reload_shapval_[3, 7]_[4, 16]_img0242.png' width="700" style="border: 5px solid blue;"><p>
+    <i>Oil spot</i> images tend to have a diffused dark area.  Here are two correctly classified examples below.<p><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/oil_spot/correct/GS_4cl_reload_shapval_3, 7_4, 16_img0006.png' width="700" style="border: 5px solid blue;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/oil_spot/correct/GS_4cl_reload_shapval_3, 7_4, 16_img0242.png' width="700" style="border: 5px solid blue;"><p>
 <br></br>
 
 _INCORRECT OIL SPOT PREDICTIONS_ (Should have been _Oil Spot_):
-    The _oil spot_ images that foiled the model tend to look have large blotches that look like <i>objects</i>.  This is what happened in the first misclassified image below.  In the second image, there is a bright spot which strong resembles a <i>hole</i> and led the model to classify it as such.  <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/oil_spot/incorrect/GS_4cl_reload_shapval_[3, 7]_[4, 16]_img0205.png' width="700" style="border: 5px solid blue;"><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/oil_spot/incorrect/GS_4cl_reload_shapval_[3, 7]_[4, 16]_img0152.png' width="700" style="border: 5px solid blue;"><p>
+    The _oil spot_ images that foiled the model tend to look have large blotches that look like <i>objects</i>.  This is what happened in the first misclassified image below.  In the second image, there is a bright spot which strong resembles a <i>hole</i> and led the model to classify it as such.  <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/oil_spot/incorrect/GS_4cl_reload_shapval_3, 7_4, 16_img0205.png' width="700" style="border: 5px solid blue;"><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/oil_spot/incorrect/GS_4cl_reload_shapval_3, 7_4, 16_img0152.png' width="700" style="border: 5px solid blue;"><p>
 <br></br>
 <span style="color:green">**4. THREAD ERROR**</span>.
     
@@ -140,9 +141,9 @@ _CORRECT THREAD ERROR PREDICTIONS_:
     
 <i>Thread_errors</i> tend to look 3-dimensional.  They can contain both long and "spotty" shapes at the same time.  Here we can see the 3x3 and 7x7 kernels working together to come to the correct classification.  However, note that in some cases the predicted probabilities are not 100%, indicating this is not an easy model to predict.
 
-<p><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/thread_error/correct/GS_4cl_reload_shapval_[3, 7]_[4, 16]_img0140.png' width="700" style="border: 5px solid green;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class//2-channels/thread_error/correct/GS_4cl_reload_shapval_[3, 7]_[4, 16]_img0100.png' width="700" style="border: 5px solid green;"><p>
+<p><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/thread_error/correct/GS_4cl_reload_shapval_3, 7_4, 16_img0140.png' width="700" style="border: 5px solid green;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class//2-channels/thread_error/correct/GS_4cl_reload_shapval_3, 7_4, 16_img0100.png' width="700" style="border: 5px solid green;"><p>
 <br></br>
 
 _INCORRECT THREAD ERROR PREDICTIONS_ (Should have been _Thread Error_):
-The most common misclassifed <i>thread_errors</i> are directed to the <i>object</i> class.  That's because in both classes the defect looks somewhat 3-dimensional and can have an elongated shape.  The following are a couple of examples. Note the probabilities of the predictions are all less than 100%, indicating these are borderline cases and the model is not very "sure" about its predictions.<p><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/thread_error/incorrect/GS_4cl_reload_shapval_[3, 7]_[4, 16]_img0136.png' width="700" style="border: 5px solid green;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class//2-channels/thread_error/incorrect/GS_4cl_reload_shapval_[3, 7]_[4, 16]_img0088.png' width="700" style="border: 5px solid green;"><p><p>
+The most common misclassifed <i>thread_errors</i> are directed to the <i>object</i> class.  That's because in both classes the defect looks somewhat 3-dimensional and can have an elongated shape.  The following are a couple of examples. Note the probabilities of the predictions are all less than 100%, indicating these are borderline cases and the model is not very "sure" about its predictions.<p><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/thread_error/incorrect/GS_4cl_reload_shapval_3, 7_4, 16_img0136.png' width="700" style="border: 5px solid green;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class//2-channels/thread_error/incorrect/GS_4cl_reload_shapval_3, 7_4, 16_img0088.png' width="700" style="border: 5px solid green;"><p><p>
 <br></br>
