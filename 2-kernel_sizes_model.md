@@ -70,11 +70,6 @@ Alpha having the best Recall<sub>std dev</sub> , and Beta has best Accuracy<sub>
 </br>
 
 
-<figure>
-<p><img src='./TILDA-defect-classific/images/introduction/2-kernelsizes/recall_3x3kernels_numbers.png' width = "800"><p>
-    <figcaption>Figure: (L) Overall accurracy of models with corresponding number of 3x3 and 7x7 kernels</figcaption>
-</figure>
-
 <h2>Model performance for individual defect classes:</h2>
 
 Recall values of each defect in each model.  While general trends are difficult to tease out, we can see that for the smaller defects of objects and holes, the performance is higher in model with more kernels (esp. 3x3 kernels), whereas for the larger or more diffused defects such as thread errors and oil spot, the performance is less dependent on the number of kernels.
