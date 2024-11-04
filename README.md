@@ -57,7 +57,7 @@ From the above random samples, one can see the original classification may have 
 1. _Objects_: Both samples 152_patch_5-7.png and 371_patch_2-4.png do not appear to have any defects (so should have been in the _good_ class).
 2. _Thread error_: Sample 128_patch2-3.png does not contain any obvious defect to the naked eye.
 3. _Hole_: Sample 034_patch3-1.png does not appear to have a hole.
-4. _Hole_: Sample 019_patch2-4.png appears to be an _objects_ defect instead of a _hole_ defect.
+4. _Hole_: Sample 019_patch2-4.png appears to be an _objects_' defect instead of a _hole_ defect.
 
 It is also interesting to note that the holes appear as bright spot, which leads me to believe that the contrast for all the samples have been reversed, or there is an illumination source from below the sample. However, that does not affect the modeling.
 
@@ -142,7 +142,7 @@ Table: Precision for the _Good_ class at 50% threshold (holdout)<br>
 Table: Recall for the _Defect_ class at 50% threshold (holdout)<br>
 </br>
 
-It is important to note that both these models are affected by the threshold for the output.  The model outputs a probability of it being a defect for each sample.  The threshold is the probability above which is a _Defect_ and below which is a _Good_.   Typically that is set at 50%.  On the other hand, there are use cases that are very sensitive to defects.  In such cases the threshold can be lowered to capture more _defects_ and produce a _purer_ good class, but this is done at the expense "wasting" samples that are marginally _Good_ and misclassifying them as _Defects_ by the model. 
+It is important to note that the Recall and Precision both these models are affected by the threshold for the output.  The model outputs a probability of it being a defect for each sample.  The threshold is the probability above which is a _Defect_ and below which is a _Good_.   Typically that is set at 50%.  On the other hand, there are use cases that are very sensitive to defects.  In such cases the threshold can be lowered to capture more _defects_ and produce a _purer_ good class, but this is done at the expense "wasting" samples that are marginally _Good_ and misclassifying them as _Defects_ by the model. 
 
 <h4>2-class defect detection summary</h4>
 
@@ -169,7 +169,7 @@ We will use the lower-case letters to refer to these 4-class models here to iden
 
 There are many ways to select the best model. Their selection depends on the use case.  For examples, some defects may be more costly to the company than others, so they should be emphasized more.  However, we are not privy to this information in this case, so we shall use the overall accuracy as the metric to select the best model, shown below. As one can see, they linger near the 50-60% levels.  While they are well above the baseline of ~25%, there is room for improvement.  
 
-<h4>Total accuracy</h4>
+<h4>Overall accuracy</h4>
 
 |     | **3x3 kernels** | **5x5 kernels** | **7x7 kernels** | **9x9 kernels** |
 | --- | --- | --- | --- | --- |
