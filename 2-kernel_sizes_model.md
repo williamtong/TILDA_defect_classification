@@ -60,7 +60,6 @@ Alpha having the best Recall<sub>std dev</sub> , and Beta has best Accuracy<sub>
 | beta |67.1%|64.0%|0.114| 
 | a-1 |58.0%|60.2%|0.087| 
 | c-2 |63.0%|58.5%|0.138| 
-<br></br>
 
 <figure>
 <p><img src='./TILDA-defect-classific/images/introduction/2-kernelsizes/Alpha_mode_recall_conf_matrix.png' width="500"> <img src='./TILDA-defect-classific/images/introduction/2-kernelsizes/Beta_mode_recall_conf_matrix.png' width = "500"><p>
