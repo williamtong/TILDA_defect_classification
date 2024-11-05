@@ -81,7 +81,7 @@ Recall values of each defect in each model.  While general trends are difficult 
 
 
 <figure>
-<p><img src='./TILDA-defect-classific/images/introduction/2-kernelsizes/gridsearch_recall_hole.png' width="300"> <img src='./TILDA-defect-classific/images/introduction/2-kernelsizes/gridsearch_recall_objects.png' width="300"> <img src='./TILDA-defect-classific/images/introduction/2-kernelsizes/gridsearch_recall_oil_spot.png' width="300"> <img src='./TILDA-defect-classific/images/introduction/2-kernelsizes/gridsearch_recall_thread_error.png' width="300"><p>
+<p><img src='./TILDA-defect-classific/images/introduction/2-kernelsizes/gridsearch_recall_hole.png' width="400"> <img src='./TILDA-defect-classific/images/introduction/2-kernelsizes/gridsearch_recall_objects.png' width="400"> <img src='./TILDA-defect-classific/images/introduction/2-kernelsizes/gridsearch_recall_oil_spot.png' width="400"> <img src='./TILDA-defect-classific/images/introduction/2-kernelsizes/gridsearch_recall_thread_error.png' width="400"><p>
     <figcaption>Figure: (L) Overall accurracy of models with corresponding number of 3x3 and 7x7 kernels</figcaption>
 </figure>
 <br>
