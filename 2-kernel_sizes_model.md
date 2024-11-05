@@ -6,11 +6,11 @@ In previous work, we have found the best kernels size for defect identification 
 
 
 <figure>
-<p><img src='./TILDA-defect-classific/images/introduction/2-kernelsizes/schematic_model_with_2_kernelsizes.png' width="500"><p>
+<p><img src='./TILDA-defect-classific/images/introduction/2-kernelsizes/schematic_model_with_2_kernelsizes.png' width="800"><p>
     <figcaption>Figure: Schematic of a CNN network with two kernel sizes (3x3 and 7x7) used in this work.</figcaption>
 </figure>
 
-<h3>Business needs:</h3>
+<h2>Business needs:</h2>
 A good starting point is the model should have high accuracy, but we can see from the previous work that a model trained with this singular goal is flawed: it did not perform well with <u>hole</u> defects.  
 
 I do not work for Tilda. Nevertheless I will establish some reasonable assumptions on what the business needs of Tilda are.  Here we shall assume that there is a business need for Tilda to lift the Recall of every defect class to perform well while maintaining the overall accuracy to <b>≥60%.</b>  Thus the business needs are summarized as follows.
@@ -38,13 +38,7 @@ I changed the learning rate from 10<sup>-5</sup> to  10<sup>-4</sup>.  Inititall
 
 <h2>Grid search results</h2>
 
-We performed a grid search for difference combinations of numbers of 3x3 kernels and 7x7 kernels.  The figure below plots for each model the overall accuracy (which we want as high as possible) and the standard deviation of the recall across the four defect class (we want this to be as low as possible).  
-
-We can see that the accuracy improves with more 3x3 kernels added to the model, as seen in Fig. (a) below. A little less clearly, but still visible is the trend that the uniformity of the performance across the 4 defect classes, as manifest by the standard deviation of the Recall value, as becomes better (i.e. smaller) with more 3x3 kernels added to the model.
-
-We focus our attention on two models that show great promise: we call them Alpha and Beta, labeled in the contour plots.   Alpha has the most uniform Recall values (0.05), as show in the right figure below, but its over accuracy is 60.0%.  Beta has the highest overall accuracy (67.0%), but its recall values are less uniform (0.114).
-
-It is worth noting that the Beta model, which has the best accuracy, is superior to model c-2 in the prior work, which has a 63.0% accuracy and an inferior uniformily 0.138, and the Alpha model, which has the best unifomity, is superior to model a-1 of the prior work, which had a Recall uniformity of 0.187 and an accuracy<sub>overall</sub> of 58.0%.  We therefore believe that the two kernel size approach produces superior results over the single kernel size approach in the prior work.
+We performed a grid search for different combinations of numbers of 3x3 kernels and 7x7 kernels.  The figures below plot for each model the overall accuracy (which we want as high as possible) and the standard deviation of the recall across the four defect class (we want this to be as low as possible).  
 
 <figure>
 <p><img src='./TILDA-defect-classific/images/introduction/2-kernelsizes/gridsearch_accuracy.png' width="500"> <img src='./TILDA-defect-classific/images/introduction/2-kernelsizes/gridsearch_stddev_recall.png' width="500"><p>
@@ -54,12 +48,23 @@ Alpha having the best Recall<sub>std dev</sub> , and Beta has best Accuracy<sub>
 <br>
 </br>
 
+We can see that the accuracy improves with more 3x3 kernels added to the model, as seen in Fig. (a) below. A little less clearly, but still visible is the trend that the uniformity of the performance across the 4 defect classes, as manifest by the standard deviation of the Recall value, as becomes better (i.e. smaller) with more 3x3 kernels added to the model.
+
+We focus our attention on two models that show great promise: we call them Alpha and Beta, labeled in the contour plots.   Alpha has the most uniform Recall values (0.05), as show in the right figure below, but its over accuracy is 60.0%.  Beta has the highest overall accuracy (67.0%), but its recall values are less uniform (0.114).
+
+It is worth noting that the Beta model, which has the best accuracy, is superior to model c-2 in the prior work, which has a 63.0% accuracy and an inferior uniformily 0.138, and the Alpha model, which has the best unifomity, is superior to model a-1 of the prior work, which had a Recall uniformity of 0.187 and an accuracy<sub>overall</sub> of 58.0%.  We therefore believe that the two kernel size approach produces superior results over the single kernel size approach in the prior work.
+
+
 |  |Accuracy<sub>overall</sub> | Recall<sub>mean</sub> | Recall<sub>stddev</sub> (Recall uniformity) |
 | -- | -- | -- | -- | 
 | alpha |60.5%|60.0%|0.054| 
 | beta |67.1%|64.0%|0.114| 
 | a-1 |58.0%|60.2%|0.087| 
 | c-2 |63.0%|58.5%|0.138| 
+
+
+<br>
+</br>
 
 <figure>
 <p><img src='./TILDA-defect-classific/images/introduction/2-kernelsizes/Alpha_mode_recall_conf_matrix.png' width="500"> <img src='./TILDA-defect-classific/images/introduction/2-kernelsizes/Beta_mode_recall_conf_matrix.png' width = "500"><p>
@@ -111,23 +116,37 @@ This class was most commonly misclassified <i>thread errors</i>.  The two images
 Hole is a challenging category.  One reason is the lack of samples.  There are only 337 samples of _hole_ defects compared to 620 for the next numerous category of _thread error_.  In the prior work, we see signs that the 3x3 kernel model, which perform less well overall compared to the 7x7 kernel model, was effective in classifying the hole category.  I surmised that the smaller 3x3 kernels are better suited for the generally hole class defects.  From examples of shap_value images of the hole class below, we can indeed see that most of the red (postive) signal can come from the 3x3 kernels.
 
 _CORRECT HOLE PREDICTIONS_:
-    These images are classified as _holes_ mostly based only the positive shapley values of the _hole_ category.  <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/hole/correct/GS_4cl_reload_shapval_3, 7_4, 16_img0003.png' width="700" style="border: 5px solid orange;"><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/hole/correct/GS_4cl_reload_shapval_3, 7_4, 16_img0031.png' width="700" style="border: 5px solid orange;"><p>
+    
+These images are classified as _holes_ mostly based only the positive shapley values of the _hole_ category.  
+<p><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/hole/correct/GS_4cl_reload_shapval_3, 7_4, 16_img0003.png' width="700" style="border: 5px solid orange;">
+
+<img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/hole/correct/GS_4cl_reload_shapval_3, 7_4, 16_img0031.png' width="700" style="border: 5px solid orange;"><p>
 <br>
 
 _INCORRECT HOLE PREDICTIONS_ (Should have been _Hole_):
-    Hole class is also most often misclassied as <i>thread errors</i>.  We have two such examples here.  Both of which would not appear as <i>holes</i> to the human eye.  Note in both cases, the probabilities of prediction was not high even for the wrong class, indicating the uncertainty of the model.  This is likely a result of the dearth of training data resembling these defects that are correctly classfied.
+   
+Hole class is also most often misclassied as <i>thread errors</i>.  We have two such examples here.  Both of which would not appear as <i>holes</i> to the human eye.  Note in both cases, the probabilities of prediction was not high even for the wrong class, indicating the uncertainty of the model.  This is likely a result of the dearth of training data resembling these defects that are correctly classfied.
+
 <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/hole/incorrect/GS_4cl_reload_shapval_3, 7_4, 16_img0020.png' width="700" style="border: 5px solid orange;">
+
 <img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/hole/incorrect/GS_4cl_reload_shapval_3, 7_4, 16_img0147.png' width="700" style="border: 5px solid orange;">
 <p>
 <br>
+
 <span style="color:blue">**3. OIL SPOT**</span>
     
 _CORRECT OIL SPOT PREDICTIONS_:
-    <i>Oil spot</i> images tend to have a diffused dark area.  Here are two correctly classified examples below.<p><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/oil_spot/correct/GS_4cl_reload_shapval_3, 7_4, 16_img0006.png' width="700" style="border: 5px solid blue;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/oil_spot/correct/GS_4cl_reload_shapval_3, 7_4, 16_img0242.png' width="700" style="border: 5px solid blue;"><p>
+    
+<i>Oil spot</i> images tend to have a diffused dark area.  Here are two correctly classified examples below.
+
+<p><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/oil_spot/correct/GS_4cl_reload_shapval_3, 7_4, 16_img0006.png' width="700" style="border: 5px solid blue;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/oil_spot/correct/GS_4cl_reload_shapval_3, 7_4, 16_img0242.png' width="700" style="border: 5px solid blue;"><p>
 <br></br>
 
 _INCORRECT OIL SPOT PREDICTIONS_ (Should have been _Oil Spot_):
-    The _oil spot_ images that foiled the model tend to look have large blotches that look like <i>objects</i>.  This is what happened in the first misclassified image below.  In the second image, there is a bright spot which strong resembles a <i>hole</i> and led the model to classify it as such.  <p><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/oil_spot/incorrect/GS_4cl_reload_shapval_3, 7_4, 16_img0205.png' width="700" style="border: 5px solid blue;"><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/oil_spot/incorrect/GS_4cl_reload_shapval_3, 7_4, 16_img0152.png' width="700" style="border: 5px solid blue;"><p>
+    
+The _oil spot_ images that foiled the model tend to look have large blotches that look like <i>objects</i>.  This is what happened in the first misclassified image below.  In the second image, there is a bright spot which strong resembles a <i>hole</i> and led the model to classify it as such.  
+    
+<p><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/oil_spot/incorrect/GS_4cl_reload_shapval_3, 7_4, 16_img0205.png' width="700" style="border: 5px solid blue;"><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/oil_spot/incorrect/GS_4cl_reload_shapval_3, 7_4, 16_img0152.png' width="700" style="border: 5px solid blue;"><p>
 <br></br>
 <span style="color:green">**4. THREAD ERROR**</span>.
     
@@ -139,5 +158,6 @@ _CORRECT THREAD ERROR PREDICTIONS_:
 <br></br>
 
 _INCORRECT THREAD ERROR PREDICTIONS_ (Should have been _Thread Error_):
+
 The most common misclassifed <i>thread_errors</i> are directed to the <i>object</i> class.  That's because in both classes the defect looks somewhat 3-dimensional and can have an elongated shape.  The following are a couple of examples. Note the probabilities of the predictions are all less than 100%, indicating these are borderline cases and the model is not very "sure" about its predictions.<p><img src='./TILDA-defect-classific/images/shap_plots/4-class/2-channels/thread_error/incorrect/GS_4cl_reload_shapval_3, 7_4, 16_img0136.png' width="700" style="border: 5px solid green;"> <img src='./TILDA-defect-classific/images/shap_plots/4-class//2-channels/thread_error/incorrect/GS_4cl_reload_shapval_3, 7_4, 16_img0088.png' width="700" style="border: 5px solid green;"><p><p>
 <br></br>
