@@ -8,7 +8,44 @@
 
 3.  The best 4-class defect identification model (c-2, with 7x7 kernels and 16 x 2<sup>n</sup> kernels per block) has an accuracy of **63.0%**, against a baseline of 25% (4 classes).  For this  4-class defect identification model, we achieve recall of 41.2%, 65.4%, 55.5%, 79.0% for the defect classes of _hole, objects, oil spot, thread error_, respectively.  Note there are 4 total classes so the baseline for a model that does "random guessing" is _25%_.  Thus the model is able extract signal.   In particular, this model performs very well for _objects_ and _thread error_, but not so well for holes.  This is largely because the dearth of _hole_ samples (only 337) vs. >600 for all other _Defect_ samples.
 
-4. <i>Addendum: Additional work was done on 2-kernel size models, with improved performance.  [Click to go to README file.](./README_2KERNEL_SIZE_MODEL.md) </i>
+4. <i>Addendum: Additional work was done on 2-kernel size models, with improved performance.  [Click to go to README file.](./README_2KERNEL_SIZE_MODEL.md) </i> This dual-branch architecture — applying two different kernel sizes in parallel and concatenating their outputs — is inspired by the <a href="https://arxiv.org/abs/1409.4842">Inception module</a> (GoogLeNet/InceptionNet), which uses the same principle to capture features at multiple spatial scales simultaneously.
+
+<h2>HOW TO RUN</h2>
+
+<h3>Prerequisites</h3>
+
+- Python 3.12 or higher
+- <a href="https://python-poetry.org/docs/#installation">Poetry</a> — if not installed: <code>curl -sSL https://install.python-poetry.org | python3 -</code>
+- The TILDA dataset from Kaggle: <a href="https://www.kaggle.com/datasets/angelolmg/tilda-400-64x64-patches">https://www.kaggle.com/datasets/angelolmg/tilda-400-64x64-patches</a> — download and unzip into <code>TILDA-defect-classific/archive-2/</code>
+
+<h3>Setup</h3>
+
+<pre><code>cd TILDA-defect-classific
+poetry install --no-root
+</code></pre>
+
+The <code>--no-root</code> flag tells Poetry to install only the dependencies listed in <code>pyproject.toml</code>, without trying to install this project itself as a Python package (which would fail since it has no package structure).
+
+<h3>Launch Jupyter</h3>
+
+On Mac (recommended — prevents the kernel from dying if the screen locks during long training runs):
+<pre><code>caffeinate -i poetry run jupyter lab
+</code></pre>
+
+On other platforms:
+<pre><code>poetry run jupyter lab
+</code></pre>
+
+<h3>Run the notebooks in this order</h3>
+
+<ol>
+<li><code>notebook_CNN/2-class/Defect_detection-3x3_8-16-32.ipynb</code> — trains the 2-class defect detection model</li>
+<li><code>notebook_CNN/4-class/Defects_identification-7x7_16-32-64.ipynb</code> — trains single-kernel 4-class identification models</li>
+<li><code>notebook_CNN/4-class/Defects_identification-3x3-7x7_combo-redux.ipynb</code> — trains dual-kernel 4-class identification models</li>
+<li><code>notebook_CNN/shap/shap_4class_new-3-4_7-16.ipynb</code> — SHAP analysis <em>(requires step 3 to have been run first)</em></li>
+</ol>
+
+<b>Note:</b> trained models are not saved in the repo. Steps 1–3 must be completed before running the SHAP notebook.
 
 <h2>INTRODUCTION</h2>
 
@@ -25,7 +62,7 @@ While the details of the exact business use cases are not known, one can infer t
 2. Build a model that will identify the defects in each image. (4-class).  This will help in the manufacturing process to diagnose problems in their production line.
 
 <h3>OVERVIEW OF DATA</h3>
-1. The data is massively imbalanced, with 90.5% if the images being in the “good” class.
+1. The data is massively imbalanced, with 90.5% of the images being in the “good” class.
 <p><img src='./TILDA-defect-classific/images/introduction/pop_dist_all_samples.png' width="800"><p>
 <p><img src='./TILDA-defect-classific/images/introduction/pop_dist_defects.png' width="800"><p>
 
@@ -76,7 +113,7 @@ The images are 64x64 pixels. We employ a segmented approach. First we use a 2-cl
 5. Each block ends with a 2x2 maxpooling layer.
 6. The final output block is quite generic. The size of the fully connected layer is about ¼ of the number of conv. kernels in the last conv. block. The softmax layer becomes a sigmoid layer when the number of classes = 2.
 7. An evaluation data set (~10%) was used as the evaluation data set to monitor the progress of the model for _early stopping_.  
-8. We employed the [Adams optimizer](https://www.geeksforgeeks.org/adam-optimizer), which adapts the learning rates for each feature by incorporating both momentum and the first and second moments of the gradient. 
+8. We employed the [Adam optimizer](https://www.geeksforgeeks.org/adam-optimizer), which adapts the learning rates for each feature by incorporating both momentum and the first and second moments of the gradient. 
 
 <p><p>
 <figure>
