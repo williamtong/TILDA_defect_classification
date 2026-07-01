@@ -150,15 +150,6 @@ def plot_2class_shap_figures(shap_values,
     plt.show()
 
 
-def using_where_neg(x):
-    return np.where(x < 0, 0, x)
-v_pospass_filter = np.vectorize(using_where_neg)
-
-
-def using_where_pos(x):
-    return np.where(x > 0, 0, x)
-v_negpass_filter = np.vectorize(using_where_pos)
-
 def plot_4class_shap_figures_2_chan(shap_values, 
                                      features_test_array, 
                                      y_predict, 
@@ -257,7 +248,7 @@ def plot_4class_shap_figures_2_chan(shap_values,
         ax[l,1].set_yticklabels([], fontsize = 0)
         ax[l,1].xaxis.set_ticks_position('none') 
 
-        shap_image = -neg_shap_values_image_0[:,:,l]
+        shap_image = -neg_shap_values_image_1[:,:,l]
         ax[l,2].imshow(features_test_array[image_num,:,:,0], cmap = 'gray', 
                    vmin = features_test_array[image_num,:,:,0].min(), vmax = features_test_array[image_num,:,:,0].max(),
                    alpha = 1)
