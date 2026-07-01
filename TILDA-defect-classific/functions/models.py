@@ -152,7 +152,6 @@ def compile_image_model(dropout, kernel_dims = [5, 7, 9], nums_filters = [4,4,4]
     image_learner = Model(inputs = inputs_list, outputs = outputs, name = 'image_learner')
     image_learner.compile(loss = "sparse_categorical_crossentropy", metrics = ["accuracy"], 
                           optimizer = tf.keras.optimizers.Adam(learning_rate= lr))
-    dot_img_file = dot_img_file
     print(image_learner.summary())
     plot_model(image_learner,
                show_layer_activations=True,
@@ -174,7 +173,7 @@ class CNN_model:
         input:
         filter_dim (integer):      The dimension of a square convolutional filter.
         dropout (0 ≤ float < 1):   Fraction connections that are dropped out for each block
-        num_filters (integer):     Number of filter for the starting block.  
+        nums_filters (integer):     Number of filter for the starting block.  
         patience (interger):       Number of epochs to elapse  Number of epochs with no improvement after which training will be stopped. 
         num_classes (integer):     Number of classes of the target variable
         '''
