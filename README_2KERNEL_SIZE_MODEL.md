@@ -1,4 +1,4 @@
-<h1>Toward a better defect classification model: <i>Mulitple kernels sizes</i></h1>
+<h1>Toward a better defect classification model: <i>Mulitple kernel sizes</i></h1>
 
 <h2>Background</h2>
 
